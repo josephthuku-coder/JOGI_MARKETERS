@@ -22,7 +22,7 @@ class AdminPanel {
 
     initFirebase() {
         const firebaseConfig = {
-            apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+            apiKey: process.env.FIREBASE_API_KEY || "YOUR_API_KEY_HERE",
             authDomain: "shopping-online-6ba36.firebaseapp.com",
             projectId: "shopping-online-6ba36",
             storageBucket: "shopping-online-6ba36.appspot.com",
