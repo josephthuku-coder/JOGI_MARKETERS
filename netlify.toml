@@ -1,0 +1,6 @@
+[build]
+  publish = "."
+  command = ""
+
+[build.environment]
+  FIREBASE_API_KEY = "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14"
