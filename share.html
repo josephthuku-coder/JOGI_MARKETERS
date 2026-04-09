@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Open Graph Meta Tags - Will be updated dynamically -->
+    <meta property="og:title" content="Loading product...">
+    <meta property="og:description" content="Loading product details...">
+    <meta property="og:image" content="https://yourdomain.com/default-image.jpg">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="product">
+    <meta property="og:site_name" content="Shopping Online">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Loading product...">
+    <meta name="twitter:description" content="Loading product details...">
+    <meta name="twitter:image" content="https://yourdomain.com/default-image.jpg">
+    
+    <!-- Regular Meta Tags -->
+    <meta name="title" content="Loading product...">
+    <meta name="description" content="Loading product details...">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+    
+    <title>Loading Product - Shopping Online</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .share-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .share-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .share-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .share-description {
+            font-size: 1.1rem;
+            color: #6c757d;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+        }
+        
+        .share-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin: 0 0 20px 0;
+        }
+        
+        .share-button {
+            background: linear-gradient(135deg, #1877f2 0%, #0c5cd5 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto 0;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(24, 119, 242, 0.4);
+        }
+        
+        .redirect-message {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .share-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .share-title {
+                font-size: 1.3rem;
+            }
+            
+            .share-price {
+                font-size: 1.6rem;
+            }
+            
+            .share-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="share-container">
+        <div id="loading-state">
+            <div class="share-icon">🛍️</div>
+            <h1 class="share-title">Loading Product...</h1>
+            <p class="share-description">Please wait while we prepare your product details...</p>
+        </div>
+        
+        <div id="product-info" style="display: none;">
+            <!-- Product details will be inserted here -->
+        </div>
+        
+        <div id="error-state" style="display: none;">
+            <div class="error-message">
+                <h3>❌ Product Not Found</h3>
+                <p>We couldn't find the product you're looking for. It may have been removed or the link is incorrect.</p>
+                <button class="share-button" onclick="goToShop()">Browse Products</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+            authDomain: "shopping-online-6ba36.firebaseapp.com",
+            projectId: "shopping-online-6ba36",
+            storageBucket: "shopping-online-6ba36.appspot.com",
+            messagingSenderId: "404079444441",
+            appId: "1:404079444441:web:bca6b897877295f92519c8"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const shopId = urlParams.get('shop');
+        const productId = urlParams.get('product');
+        
+        if (!shopId || !productId) {
+            showError('Missing shop or product ID');
+            return;
+        }
+        
+        // Fetch product data
+        async function loadProduct() {
+            try {
+                console.log('Loading product:', { shopId, productId });
+                
+                // Get shop info
+                const shopDoc = await db.collection('users').doc(shopId).get();
+                if (!shopDoc.exists) {
+                    showError('Shop not found');
+                    return;
+                }
+                
+                const shopData = shopDoc.data();
+                
+                // Get product info
+                const productDoc = await db.collection('products')
+                    .where('shopId', '==', shopId)
+                    .where('id', '==', productId)
+                    .limit(1)
+                    .get();
+                
+                if (productDoc.empty) {
+                    showError('Product not found');
+                    return;
+                }
+                
+                const product = productDoc.docs[0].data();
+                
+                // Update OG tags
+                updateMetaTags(product, shopData, shopId, productId);
+                
+                // Display product info
+                displayProduct(product, shopData, shopId, productId);
+                
+                // Track view
+                trackView(productId, shopId);
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    redirectToProduct(shopId, productId);
+                }, 3000); // 3 seconds delay
+                
+            } catch (error) {
+                console.error('Error loading product:', error);
+                showError('Failed to load product');
+            }
+        }
+        
+        function updateMetaTags(product, shopData, shopId, productId) {
+            try {
+                const baseUrl = window.location.origin;
+                const shareUrl = `${baseUrl}/share.html?shop=${shopId}&product=${productId}`;
+                const productUrl = `${baseUrl}/shop.html?shop=${shopId}&product=${productId}`;
+                
+                const title = `${product.name} - Ksh ${product.price} | Shopping Online`;
+                const description = `${product.name} for Ksh ${product.price}. ${product.description}`;
+                const imageUrl = product.imageUrl || `${baseUrl}/assets/images/default-product.jpg`;
+                
+                // Update OG tags
+                document.title = title;
+                
+                // Update or create OG meta tags
+                setMetaTag('og:title', title);
+                setMetaTag('og:description', description);
+                setMetaTag('og:image', imageUrl);
+                setMetaTag('og:url', shareUrl);
+                setMetaTag('og:type', 'product');
+                setMetaTag('og:site_name', 'Shopping Online');
+                
+                // Update Twitter tags
+                setMetaTag('twitter:title', title);
+                setMetaTag('twitter:description', description);
+                setMetaTag('twitter:image', imageUrl);
+                
+                // Update regular meta tags
+                setMetaTag('description', description);
+                
+                console.log('Meta tags updated:', { title, description, imageUrl, shareUrl });
+                
+            } catch (error) {
+                console.error('Error updating meta tags:', error);
+            }
+        }
+        
+        function setMetaTag(property, content) {
+            try {
+                let tag;
+                if (property.startsWith('og:')) {
+                    tag = document.querySelector(`meta[property="${property}"]`);
+                } else if (property.startsWith('twitter:')) {
+                    tag = document.querySelector(`meta[name="${property}"]`);
+                } else {
+                    tag = document.querySelector(`meta[name="${property}"]`);
+                }
+                
+                if (!tag) {
+                    tag = document.createElement('meta');
+                    if (property.startsWith('og:')) {
+                        tag.setAttribute('property', property);
+                    } else {
+                        tag.setAttribute('name', property);
+                    }
+                    document.head.appendChild(tag);
+                }
+                
+                tag.setAttribute('content', content);
+            } catch (error) {
+                console.error(`Error setting meta tag ${property}:`, error);
+            }
+        }
+        
+        function displayProduct(product, shopData, shopId, productId) {
+            const productInfo = document.getElementById('product-info');
+            const loadingState = document.getElementById('loading-state');
+            
+            if (productInfo && loadingState) {
+                loadingState.style.display = 'none';
+                productInfo.style.display = 'block';
+                
+                productInfo.innerHTML = `
+                    <div class="share-icon">
+                        <img src="${product.imageUrl || 'assets/images/default-product.jpg'}" 
+                             alt="${product.name}" 
+                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
+                    <h1 class="share-title">${product.name}</h1>
+                    <div class="share-price">Ksh ${product.price}</div>
+                    <p class="share-description">${product.description}</p>
+                    <p class="redirect-message">🔄 Redirecting to product page in a moment...</p>
+                    <a href="/shop.html?shop=${shopId}&product=${productId}" class="share-button">
+                        View Product Details
+                    </a>
+                `;
+            }
+        }
+        
+        function showError(message) {
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            
+            if (loadingState && errorState) {
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+            }
+        }
+        
+        function redirectToProduct(shopId, productId) {
+            window.location.href = `/shop.html?shop=${shopId}&product=${productId}`;
+        }
+        
+        function goToShop() {
+            window.location.href = '/index.html#shopping';
+        }
+        
+        function trackView(productId, shopId) {
+            try {
+                // Track product view
+                db.collection('analytics').doc(productId).set({
+                    views: firebase.firestore.FieldValue.increment(1),
+                    lastViewed: new Date().toISOString()
+                }, { merge: true });
+                
+                console.log('Product view tracked:', productId);
+            } catch (error) {
+                console.error('Error tracking view:', error);
+            }
+        }
+        
+        // Start loading product
+        loadProduct();
+    </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="shop-title">Shop - Shopping Online</title>
+    <!-- Enhanced SEO Meta Tags -->
+    <meta property="og:title" id="og-title" content="Shop - Shopping Online">
+    <meta property="og:description" id="og-description" content="Check out amazing products!">
+    <meta property="og:image" id="og-image" content="">
+    <meta property="og:url" id="og-url" content="">
+    <meta property="og:type" id="og-type" content="website">
+    <meta property="og:site_name" content="Shopping Online">
+    <meta name="twitter:card" id="twitter-card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Shop - Shopping Online">
+    <meta name="twitter:description" id="twitter-description" content="Check out amazing products!">
+    <meta name="twitter:image" id="twitter-image" content="">
+    <meta name="description" id="meta-description" content="Shop amazing products on Shopping Online - Kenya's trusted marketplace">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/shop.css">
+    <link rel="stylesheet" href="CSS/facebook-share.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta http-equiv="Permissions-Policy" content="unload=(self)">
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/images/icons/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="assets/images/icons/favicon-144.png" type="image/png" sizes="144x144">
+    <link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="assets/images/icons/favicon-64.png" type="image/png" sizes="64x64">
+    <link rel="icon" href="assets/images/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="assets/images/icons/favicon-16.png" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="assets/images/icons/favicon-96.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-192.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-144.png" sizes="144x144">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-96.png" sizes="96x96">
+</head>
+<body>
+    <!-- Shop Header -->
+    <header class="shop-header">
+        <div class="header-content">
+            <div class="logo">
+                <h2>🛍️ Shopping Online</h2>
+            </div>
+            <div class="shop-info">
+                <h3 id="shop-name">Loading Shop...</h3>
+            </div>
+            <div class="shop-stats">
+                <span class="stat-item">
+                    <i class="fas fa-box"></i>
+                    <span id="product-count">0</span> Products
+                </span>
+                <span class="stat-item">
+                    <i class="fas fa-star"></i>
+                    Trusted Seller
+                </span>
+                <button onclick="location.reload()" class="btn secondary" style="margin-left: 10px;">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Shop Content -->
+    <main class="shop-main">
+        <!-- Shop Banner -->
+        <section class="shop-banner">
+            <div class="banner-content">
+                <h1 id="banner-shop-name">Welcome to Our Shop</h1>
+                <p id="banner-description">Check out our amazing products!</p>
+                <div class="shop-stats">
+                    <span class="stat-item">
+                        <i class="fas fa-box"></i>
+                        <span id="product-count">0</span> Products
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-star"></i>
+                        Trusted Seller
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-state" style="display: none;">
+            <div class="loading-content">
+                <div class="loader"></div>
+                <p>Loading amazing products...</p>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="error-state" style="display: none;">
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Oops! Something went wrong</h3>
+                <p id="error-message">We couldn't load the shop or product. Please try again.</p>
+                <button class="btn primary" onclick="location.reload()">
+                    <i class="fas fa-sync"></i> Try Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="section-header">
+                <h2>🛍️ Our Products</h2>
+                <div class="view-options">
+                    <!-- Admin-only controls - will be shown via JavaScript if user is owner -->
+                    <div id="admin-controls" style="display: none;">
+                        <div class="sharing-controls">
+                            <button class="btn secondary select-all-btn" onclick="shopManager.selectAllProducts()">
+                                <i class="fas fa-check-square"></i> Select All
+                            </button>
+                            <button class="btn secondary clear-selection-btn" onclick="shopManager.clearSelection()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                            <button class="btn primary share-facebook-btn" onclick="shopManager.shareToFacebook()" disabled>
+                                <i class="fab fa-facebook"></i> Share to Facebook (0)
+                            </button>
+                        </div>
+                        <div class="view-controls">
+                            <button class="btn primary add-product-btn" onclick="shopManager.addProduct()">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                            <button class="view-btn active" onclick="setViewMode('grid')">
+                                <i class="fas fa-th"></i> Grid
+                            </button>
+                            <button class="view-btn" onclick="setViewMode('list')">
+                                <i class="fas fa-list"></i> List
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Visitor-only controls -->
+                    <div id="visitor-controls">
+                        <div class="view-controls">
+                            <button class="view-btn active" onclick="setViewMode('grid')">
+                                <i class="fas fa-th"></i> Grid
+                            </button>
+                            <button class="view-btn" onclick="setViewMode('list')">
+                                <i class="fas fa-list"></i> List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid/List -->
+            <div id="products-container" class="products-grid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-products" class="empty-products" style="display: none;">
+                <div class="empty-icon">📦</div>
+                <h3>No Products Available</h3>
+                <p>This shop hasn't uploaded any products yet.</p>
+            </div>
+        </section>
+
+        <!-- Product Detail Modal -->
+        <div id="product-detail-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="detail-product-name">Product Details</h3>
+                   
+                </div>
+                <div class="modal-body">
+                    <div class="product-gallery">
+                        <div style="background: #007bff; color: white; padding: 10px; margin-bottom: 10px; text-align: center; border-radius: 5px;">
+                            📷 CLICK THE IMAGE BELOW TO OPEN IMAGE VIEWER 📷
+                        </div>
+                        <img id="detail-product-image" src="" alt="Product" onclick="shopManager.showFullImage(this.src)" style="border: 3px solid #007bff; cursor: pointer;">
+                    </div>
+                    <div class="product-details">
+                        <div class="price-display">
+                            <span class="currency">Ksh</span>
+                            <span id="detail-product-price">0</span>
+                        </div>
+                        <p id="detail-product-description">Product description here...</p>
+                        <div class="shop-info">
+                            <p><strong>Sold by:</strong> <span id="detail-shop-name">Shop Name</span></p>
+                            <p><strong>Contact:</strong> <span id="detail-shop-phone">Phone Number</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <div class="action-buttons">
+                        <button class="btn secondary" onclick="shareProduct()">
+                            <i class="fab fa-facebook"></i> Share Product
+                        </button>
+                        <button class="btn primary" onclick="orderProduct()">
+                            <i class="fab fa-whatsapp"></i> Make Order
+                        </button>
+                      
+                    </div>
+                    <div class="navigation-options">
+                        <button class="nav-btn" onclick="seeMoreProducts()">
+                            <i class="fas fa-eye"></i> See More Products from This Shop
+                        </button>
+                        <button class="nav-btn" onclick="exploreOtherShops()">
+                            <i class="fas fa-store"></i> Explore Other Shops
+                        </button>
+                        <button class="nav-btn" onclick="backToFacebook()">
+                            <i class="fab fa-facebook"></i> Back to Facebook
+                        </button>
+                        <button class="nav-btn" onclick="goToHomepage()">
+                            <i class="fas fa-home"></i> Homepage of My Website
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Size Image Viewer Modal -->
+        <div id="image-viewer-modal" class="modal">
+            <div class="modal-content full-image-modal">
+                <div class="modal-header">
+                    <h3>Product Image Viewer</h3>
+                    <button class="close-btn" onclick="shopManager.closeImageViewer()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="image-viewer-container">
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" onclick="shopManager.zoomIn()">
+                                <i class="fas fa-search-plus"></i> Zoom In
+                            </button>
+                            <button class="zoom-btn" onclick="shopManager.zoomOut()">
+                                <i class="fas fa-search-minus"></i> Zoom Out
+                            </button>
+                            <button class="zoom-btn" onclick="shopManager.resetZoom()">
+                                <i class="fas fa-compress"></i> Reset
+                            </button>
+                            <button class="zoom-btn" onclick="shopManager.toggleFullscreen()">
+                                <i class="fas fa-expand"></i> Fullscreen
+                            </button>
+                            <button class="zoom-btn back-btn" onclick="document.getElementById('image-viewer-modal').style.display='none'">
+                                <i class="fas fa-arrow-left"></i> Back to Shop
+                            </button>
+                        </div>
+                        <div class="image-viewport" id="image-viewport">
+                            <img id="viewer-image" src="" alt="Product Image" style="transform: scale(1);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading shop...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="shop-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Shopping Online. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Homepage</a>
+                <a href="#" onclick="goToDashboard()">Dashboard</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Initialization -->
+    <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+      authDomain: "shopping-online-6ba36.firebaseapp.com", 
+      projectId: "shopping-online-6ba36",
+      storageBucket: "shopping-online-6ba36.appspot.com",
+      messagingSenderId: "404079444441",
+      appId: "1:404079444441:web:bca6b897877295f92519c8"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    </script>
+
+    <!-- Global Functions -->
+    <script>
+    // Break service worker cache
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+    
+    function uploadProductToMyShop() {
+        if (shopManager && shopManager.uploadProductToMyShop) {
+            shopManager.uploadProductToMyShop();
+        }
+    }
+    
+    function setViewMode(mode) {
+        if (shopManager && shopManager.setViewMode) {
+            shopManager.setViewMode(mode);
+        }
+    }
+    
+    // Initialize shop manager when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a bit for all scripts to load
+        setTimeout(() => {
+            if (typeof ShopManager !== 'undefined') {
+                window.shopManager = new ShopManager();
+            }
+        }, 100);
+    });
+    </script>
+
+    <!-- Shop Scripts -->
+    <script src="JS/shop.js?v=CSS-FIX-APPLIED-20250401"></script>
+
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade to Premium - Shopping Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ffd700;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-bg: #1a1a2e;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --border-color: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --gold-gradient: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .upgrade-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .upgrade-header {
+            background: var(--gold-gradient);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: headerShine 3s infinite;
+        }
+
+        @keyframes headerShine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .upgrade-header h1 {
+            color: var(--dark-bg);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .upgrade-header p {
+            color: var(--dark-bg);
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .upgrade-body {
+            padding: 2rem;
+        }
+
+        .premium-features {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .feature-text h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .payment-section {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .payment-section h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-display {
+            background: var(--gold-gradient);
+            color: var(--dark-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .payment-method.selected {
+            border-color: var(--accent-color);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-method h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .payment-method p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .upgrade-btn {
+            width: 100%;
+            background: var(--gold-gradient);
+            color: var(--dark-bg);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .upgrade-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .admin-notice {
+            background: var(--warning-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-notice i {
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background: var(--danger-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .upgrade-container {
+                max-width: 100%;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="upgrade-container">
+        <!-- Header -->
+        <div class="upgrade-header">
+            <h1><i class="fas fa-crown"></i> Upgrade to Premium</h1>
+            <p>Unlock unlimited products and advanced features</p>
+        </div>
+
+        <!-- Body -->
+        <div class="upgrade-body">
+            <!-- Admin Approval Notice -->
+            <div class="admin-notice">
+                <i class="fas fa-info-circle"></i>
+                <span>Premium account creation requires admin approval. Your request will be reviewed within 24 hours.</span>
+            </div>
+
+            <!-- Premium Features -->
+            <div class="premium-features">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Unlimited Products</h3>
+                        <p>Upload and sell unlimited products without restrictions</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Advanced Analytics</h3>
+                        <p>Track sales, views, and customer behavior</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Priority Support</h3>
+                        <p>Get priority customer support 24/7</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Display -->
+            <div class="price-display">
+                <div class="price-amount">Ksh 200</div>
+                <div class="price-period">per month</div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="payment-section">
+                <h3><i class="fas fa-credit-card"></i> Choose Payment Method</h3>
+                
+                <form id="upgrade-form">
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPaymentMethod('mpesa')">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h4>M-Pesa</h4>
+                            <p>Pay via M-Pesa</p>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('card')">
+                            <i class="fas fa-credit-card"></i>
+                            <h4>Credit Card</h4>
+                            <p>Visa, Mastercard, etc.</p>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('bank')">
+                            <i class="fas fa-university"></i>
+                            <h4>Bank Transfer</h4>
+                            <p>Direct bank deposit</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group" id="mpesa-fields" style="display: none;">
+                        <label for="mpesa-number">M-Pesa Number</label>
+                        <input type="tel" id="mpesa-number" name="mpesaNumber" placeholder="07XX XXX XXX">
+                    </div>
+
+                    <div class="form-group" id="card-fields" style="display: none;">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" name="cardNumber" placeholder="1234 5678 9012 3456">
+                    </div>
+
+                    <!-- Messages -->
+                    <div class="success-message" id="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        Your premium account request has been submitted successfully! You will receive an email once approved by admin.
+                    </div>
+
+                    <div class="error-message" id="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="error-text">Error occurred. Please try again.</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="upgrade-btn" id="submit-btn">
+                        <i class="fas fa-rocket"></i>
+                        <span id="btn-text">Submit Premium Request</span>
+                        <div class="loading-spinner" id="loading-spinner"></div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Back Button -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="dashboard.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Free Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Include account.js for M-Pesa functions -->
+    <script src="JS/account.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+            authDomain: "shopping-online-6ba36.firebaseapp.com", 
+            projectId: "shopping-online-6ba36",
+            storageBucket: "shopping-online-6ba36.appspot.com",
+            messagingSenderId: "404079444441",
+            appId: "1:404079444441:web:bca6b897877295f92519c8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("A0OtQsH6zdIb33M8-");
+        })();
+
+        // Email notification service (same as account.js)
+        async function sendEmailNotification(email, subject, message, templateData = {}) {
+            try {
+                console.log('📧 Sending email notification:', { email, subject, message });
+                
+                const serviceID = 'service_r4f4udw';
+                const templateID = templateData.templateId || 'template_3w9d45m';
+                
+                const templateParams = {
+                    to_email: email,
+                    to_name: templateData.username || 'User',
+                    subject: subject,
+                    message: message,
+                    reply_to: 'josephgthuku@gmail.com',
+                    ...templateData
+                };
+                
+                const response = await emailjs.send(serviceID, templateID, templateParams);
+                console.log('✅ Email sent successfully:', response);
+                return true;
+            } catch (error) {
+                console.error('❌ Email sending failed:', error);
+                return false;
+            }
+        }
+
+        // Add simulateMpesaPayment function directly
+        async function simulateMpesaPayment(phone, amount) {
+            try {
+                console.log('💳 Simulating M-Pesa payment...');
+                console.log('💳 Phone:', phone);
+                console.log('💳 Amount:', amount);
+                
+                // For development: Skip actual API call and simulate success
+                if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                    console.log('🧪 Development mode: Simulating successful payment');
+                    console.log('📱 NOTE: No real M-Pesa prompt in development mode');
+                    
+                    // Simulate payment processing delay
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    return {
+                        success: true,
+                        transactionId: 'DEV_' + Date.now(),
+                        message: 'Payment simulated successfully (Development Mode)'
+                    };
+                }
+                
+                // Production: Try actual M-Pesa API
+                console.log('🔍 Attempting real M-Pesa API call...');
+                const response = await fetch('http://localhost:3000/api/mpesa/stkpush', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phoneNumber: phone,
+                        amount: amount,
+                        accountReference: 'SHOPPING_PREMIUM'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`M-Pesa API error: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('💳 M-Pesa payment response:', result);
+                return result;
+                
+            } catch (error) {
+                console.error('M-Pesa API Error:', error);
+                
+                // Fallback for development
+                if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                    console.log('🧪 Development mode: Simulating successful payment');
+                    return {
+                        success: true,
+                        transactionId: 'DEV_' + Date.now(),
+                        message: 'Payment simulated successfully (Development Mode)'
+                    };
+                }
+                
+                return {
+                    success: false,
+                    message: 'M-Pesa service unavailable. Please try again.'
+                };
+            }
+        }
+        const auth = firebase.auth();
+
+        // Global variables
+        let selectedPaymentMethod = null;
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupEventListeners();
+        });
+
+        // Check authentication
+        function checkAuth() {
+            const userSession = sessionStorage.getItem('userSession');
+            if (!userSession) {
+                window.location.href = 'index.html#login';
+                return;
+            }
+            
+            currentUser = JSON.parse(userSession);
+            console.log('🔐 Current user:', currentUser);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('upgrade-form').addEventListener('submit', handleUpgradeSubmit);
+        }
+
+        // Select payment method
+        function selectPaymentMethod(method) {
+            // Remove previous selection
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selection to clicked method
+            event.currentTarget.classList.add('selected');
+            selectedPaymentMethod = method;
+
+            // Show/hide relevant fields
+            document.getElementById('mpesa-fields').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
+        }
+
+        // Handle upgrade submission
+        async function handleUpgradeSubmit(event) {
+            event.preventDefault();
+
+            if (!selectedPaymentMethod) {
+                showError('Please select a payment method');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('loading-spinner');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Processing...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                // Get form data
+                const formData = new FormData(event.target);
+                const upgradeData = {
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    paymentMethod: selectedPaymentMethod,
+                    mpesaNumber: formData.get('mpesaNumber'),
+                    cardNumber: formData.get('cardNumber'),
+                    userId: currentUser.userId,
+                    username: currentUser.username,
+                    requestedAt: new Date().toISOString(),
+                    status: 'pending', // pending admin approval
+                    amount: 200,
+                    currency: 'Ksh',
+                    billingCycle: 'monthly'
+                };
+
+                // Add payment method specific data
+                if (selectedPaymentMethod === 'mpesa') {
+                    upgradeData.mpesaNumber = formData.get('mpesaNumber');
+                } else if (selectedPaymentMethod === 'card') {
+                    upgradeData.cardNumber = formData.get('cardNumber');
+                }
+
+                console.log('🚀 Submitting upgrade request:', upgradeData);
+
+                // Process M-Pesa payment first
+                if (selectedPaymentMethod === 'mpesa') {
+                    console.log('📱 Initiating M-Pesa payment using existing API...');
+                    
+                    // Use existing M-Pesa API from account.js
+                    const paymentResult = await simulateMpesaPayment(upgradeData.mpesaNumber, upgradeData.amount);
+                    
+                    if (!paymentResult.success) {
+                        showError(`M-Pesa payment failed: ${paymentResult.message || 'Unknown error'}`);
+                        return; // Stop if payment fails
+                    }
+                    
+                    console.log('✅ M-Pesa payment successful:', paymentResult);
+                    
+                    // Send account creation email after successful payment
+                    const accountEmailSent = await sendEmailNotification(
+                        upgradeData.email,
+                        '🎉 Your Premium Upgrade Request Received!',
+                        `Dear ${upgradeData.fullName},\n\nThank you for requesting to upgrade your account to premium!\n\nWe have received your payment of Ksh ${upgradeData.amount} via ${upgradeData.paymentMethod}.\n\nYour upgrade request details:\n- Transaction ID: ${paymentResult.transactionId}\n- Amount: Ksh ${upgradeData.amount}\n- Method: ${upgradeData.paymentMethod}\n- Status: Pending Admin Approval\n\nWhat happens next:\n1. Our admin team will review your request\n2. You will receive an approval email within 24 hours\n3. Your account will be upgraded to premium\n4. You'll have access to unlimited products and premium features\n\nCurrent account status: Free Account (5 products limit)\nPending upgrade: Premium Account (unlimited products)\n\nThank you for choosing Shopping Online Premium!\n\nSupport:\n- Email: josephgthuku@gmail.com\n- Phone: +254 707584594\n- WhatsApp: +254 707584594`,
+                        {
+                            username: upgradeData.fullName,
+                            accountType: 'Premium Upgrade',
+                            transactionId: paymentResult.transactionId,
+                            amount: upgradeData.amount,
+                            paymentMethod: upgradeData.paymentMethod,
+                            supportEmail: 'josephgthuku@gmail.com',
+                            supportPhone: '+254 707584594',
+                            currentAccount: 'Free Account (5 products limit)',
+                            upgradeAccount: 'Premium Account (unlimited products)'
+                        }
+                    );
+
+                    console.log(accountEmailSent ? '✅ Account creation email sent' : '❌ Account creation email failed');
+                    
+                    // Show user the payment was initiated
+                    alert(`📱 M-Pesa payment initiated for ${upgradeData.mpesaNumber}\n\nAmount: Ksh 200\nTransaction ID: ${paymentResult.transactionId}\n\n${accountEmailSent ? '✅ Confirmation email sent to your inbox' : '⚠️ Email notification failed'}\n\nPlease check your phone for M-Pesa prompt and enter your PIN to complete payment.\n\nYour upgrade request is now pending admin approval.`);
+                }
+
+                // Save to Firestore after successful payment
+                console.log('💾 Saving upgrade request to Firestore...');
+                console.log('💾 Upgrade data:', upgradeData);
+                
+                await db.collection('premiumRequests').add(upgradeData);
+                console.log('✅ Upgrade request saved to Firestore with ID');
+                
+                // Show success message
+                showSuccess();
+
+                // Reset form
+                event.target.reset();
+
+                // In a real app, you would integrate with actual payment gateway here
+                // For now, we'll just mark as pending admin approval
+
+            } catch (error) {
+                console.error('❌ Error submitting upgrade request:', error);
+                showError('Failed to submit upgrade request. Please try again.');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.textContent = 'Submit Premium Request';
+                spinner.style.display = 'none';
+            }
+        }
+
+        // Show success message
+        function showSuccess() {
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show error message
+        function showError(message) {
+            document.getElementById('error-text').textContent = message;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Permissions-Policy" content="unload=(self)">
+<title>Shopping Online</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+<!-- EmailJS for Email Notifications -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/images/icons/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="icon" href="assets/images/icons/favicon-144.png" type="image/png" sizes="144x144">
+<link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="assets/images/icons/favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="assets/images/icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/images/icons/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="shortcut icon" href="assets/images/icons/favicon-96.png">
+<link rel="apple-touch-icon" href="assets/images/icons/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/images/icons/favicon-144.png" sizes="144x144">
+<link rel="apple-touch-icon" href="assets/images/icons/favicon-96.png" sizes="96x96">
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <h2 class="logo">SHOPPING ONLINE</h2>
+
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#create-account">Create Account</a></li>
+        <li><a href="#login">Login</a></li>
+        <li><a href="#shopping">Shopping</a></li>
+        <li><a href="admin.html">Admin</a></li>
+    </ul>
+</nav>
+
+
+<!-- HERO SECTION -->
+<section class="hero">
+
+    <!-- Hero Text Above Title -->
+    <div class="hero-text">
+        <div class="hero-text-inner">
+            <div class="hero-text-message">
+                <span class="text-letter">C</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">y</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">w</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">h</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">p</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">d</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">i</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">g</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">i</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">y</span>
+                <span class="text-letter">!</span>
+            </div>
+            <div class="hero-text-message" style="display: none;">
+                <span class="text-letter">Y</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">j</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">d</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">c</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">c</span>
+                <span class="text-letter">c</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">d</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">x</span>
+                <span class="text-letter">t</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">+</span>
+                <span class="text-letter">2</span>
+                <span class="text-letter">5</span>
+                <span class="text-letter">4</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">7</span>
+                <span class="text-letter">0</span>
+                <span class="text-letter">7</span>
+                <span class="text-letter">5</span>
+                <span class="text-letter">8</span>
+                <span class="text-letter">4</span>
+                <span class="text-letter">5</span>
+                <span class="text-letter">9</span>
+                <span class="text-letter">4</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">f</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">p</span>
+                <span class="text-letter">p</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">v</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">.</span>
+            </div>
+            <div class="hero-text-message" style="display: none;">
+                <span class="text-letter">J</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">i</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">h</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">n</span>
+                <span class="text-letter">d</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">f</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">c</span>
+                <span class="text-letter">c</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">f</span>
+                <span class="text-letter">u</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">s</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">l</span>
+                <span class="text-letter">e</span>
+                <span class="text-letter">r</span>
+                <span class="text-letter">s</span>
+                <span class="text-letter space"></span>
+                <span class="text-letter">t</span>
+                <span class="text-letter">o</span>
+                <span class="text-letter">d</span>
+                <span class="text-letter">a</span>
+                <span class="text-letter">y</span>
+                <span class="text-letter">!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animated Title -->
+    <h1 class="hero-title">
+        <span>S</span>
+        <span>H</span>
+        <span>O</span>
+        <span>P</span>
+        <span>P</span>
+        <span>I</span>
+        <span>N</span>
+        <span>G</span>
+
+        <br>
+
+        <span>O</span>
+        <span>N</span>
+        <span>L</span>
+        <span>I</span>
+        <span>N</span>
+        <span>E</span>
+    </h1>
+
+    <div class="hero-buttons">
+        <button class="btn primary" style="background-color: #007bff; color: #ffffff;">Create Account</button>
+        <button class="btn secondary" style="background-color: #6c757d; color: #ffffff;">Explore Shops</button>
+    </div>
+
+    <!-- SCROLL INDICATOR -->
+    <div class="scroll-indicator">
+        <div class="scroll-button">
+            <span class="scroll-emoji">👇</span>
+            <div class="scroll-pulse"></div>
+        </div>
+    </div>
+
+</section>
+
+<!-- CREATE ACCOUNT SECTION -->
+<section id="create-account" class="create-account-section">
+    <div class="create-account-container">
+        <h2 class="section-title">Create Your Shop Account</h2>
+        
+        <!-- Account Type Selection -->
+        <div id="account-type-selection" class="account-type-selection">
+            <h3>Choose Your Account Type</h3>
+            <div class="account-type-options">
+                <button class="account-type-btn free" data-type="free" style="background-color: #007bff; color: #ffffff;">
+                    <div class="account-icon">🆓</div>
+                    <h4>Free Account</h4>
+                    <p>Start selling today with basic features</p>
+                    <ul class="features">
+                        <li>✅ List up to 5 products</li>
+                        <li>✅ Basic shop customization</li>
+                        <li>✅ Customer messaging</li>
+                        <li>✅ Monthly sales reports</li>
+                    </ul>
+                </button>
+                
+                <button class="account-type-btn premium" data-type="premium" style="background-color: #6610f2; color: #ffffff;">
+                    <div class="account-icon">👑</div>
+                    <h4>Premium Account</h4>
+                    <p>Unlock advanced features for growth</p>
+                    <ul class="features">
+                        <li>✅ Unlimited products</li>
+                        <li>✅ Advanced analytics</li>
+                        <li>✅ Priority support</li>
+                        <li>✅ Custom branding</li>
+                        <li>✅ Featured placement</li>
+                    </ul>
+                    <div class="price-tag">Ksh 200/month</div>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Registration Form -->
+        <div id="registration-form" class="registration-form" style="display: none;">
+            <h3>Create Your <span id="account-type-display"></span> Account</h3>
+            
+            <form id="shop-registration-form">
+                <div class="form-group">
+                    <label for="username">Shop Name</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your name" required>
+                    <small>We'll add "'s Shop" automatically</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userId">National ID / Passport Number</label>
+                    <input type="text" id="userId" name="userId" placeholder="Enter valid ID number" required>
+                    <small>Must be a valid, functional ID for verification</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="phone-input-group">
+                        <input type="tel" id="countryCode" name="countryCode" value="+254" readonly>
+                        <input type="tel" id="phone" name="phone" placeholder="700123456" required>
+                    </div>
+                    <small>Include country code for international numbers</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    <small>For account notifications and updates</small>
+                </div>
+                
+                <!-- M-Pesa Payment for Premium -->
+                <div id="mpesa-payment" class="mpesa-payment" style="display: none;">
+                    <div class="payment-section">
+                        <h4>🔐 Premium Account Payment</h4>
+                        <div class="payment-info">
+                            <p>Account opening fee: <strong>Ksh 200</strong></p>
+                            <p>Click below to initiate M-Pesa payment</p>
+                        </div>
+                        <button type="button" id="mpesa-pay-btn" class="btn mpesa-btn" style="background-color: #34c759; color: #ffffff;">
+                            <span class="mpesa-icon">💳</span>
+                            Pay with M-Pesa - Ksh 200
+                        </button>
+                        <div id="mpesa-status" class="mpesa-status" style="display: none;">
+                            <p>📱 Initiating M-Pesa payment...</p>
+                            <p>Enter your M-Pesa PIN when prompted</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <!-- BACK BUTTON - NOT RELATED TO SHOP IMAGE VIEWER -->
+                    <button type="button" id="back-to-selection" class="btn secondary" style="background: #ff6b6b; color: #ffffff; border: 2px solid #ff6b6b;">Back</button>
+                    <button type="submit" id="submit-account" class="btn primary" style="background-color: #007bff; color: #ffffff;">
+                        <span id="submit-text">Create Account</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="account-success" class="success-message" style="display: none;">
+            <div class="success-content">
+                <div class="success-icon">🎉</div>
+                <h3>Account Created Successfully!</h3>
+                <div id="success-message">
+                    <!-- Success message will be dynamically inserted here -->
+                </div>
+                <p><strong>Account Type:</strong> <span id="success-account-type"></span></p>
+                <button class="btn primary" onclick="window.location.href='index.html#login'" style="background-color: #007bff; color: #ffffff;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Go to Login
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 🌟 Keep Scrolling for Amazing Features! -->
+<div class="scroll-encouragement">
+    <p>🚀 Keep scrolling to discover more! 🎯</p>
+</div>
+
+<!-- LOGIN SECTION -->
+<section id="login" class="login-section">
+    <div class="login-container">
+        <h2 class="section-title">Login to Your Shop</h2>
+        
+        <div class="login-form">
+            <form id="shop-login-form">
+                <div class="form-group">
+                    <label for="login-username"> Email</label>
+                    <input type="text" id="login-username" name="login-username" placeholder="Enter shop name or email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-phone">Phone Number</label>
+                    <input type="tel" id="login-phone" name="login-phone" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-account-type">Account Type</label>
+                    <select id="login-account-type" name="login-account-type">
+                        <option value="">Select Account Type</option>
+                        <option value="free">Free Account</option>
+                        <option value="premium">Premium Account</option>
+                    </select>
+                    <small>Choose which account type to access (optional - will auto-detect if not selected)</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn primary" style="background-color: #007bff; color: #ffffff;">Login to Shop</button>
+                    <a href="#create-account" class="create-account-link">Don't have an account? Create one</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- LIVE STATISTICS -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat-item">
+            <div class="stat-number" data-target="234">0</div>
+            <div class="stat-label">Active Shops</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="1847">0</div>
+            <div class="stat-label">Products Listed</div>
+        </div>
+        <div class="stat-item premium-stat">
+            <div class="stat-number premium-count" data-target="0">0</div>
+            <div class="stat-label">Premium Accounts</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="89">0</div>
+            <div class="stat-label">Happy Customers Today</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" data-target="15">0</div>
+            <div class="stat-label">New Products Today</div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <div class="testimonials-slider">
+        <div class="testimonial-card active">
+            <div class="testimonial-text">"This platform made it so easy to start my online shop. I was selling in less than an hour!"</div>
+            <div class="testimonial-author">
+                <div class="author-avatar">JK</div>
+                <div class="author-info">
+                    <div class="author-name">John Koome</div>
+                    <div class="author-shop">TechGadgets Store</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="testimonial-text">"Great interface and amazing features. My sales increased by 40% in the first month!"</div>
+            <div class="testimonial-author">
+                <div class="author-avatar">SK</div>
+                <div class="author-info">
+                    <div class="author-name">Sarah Kerubo</div>
+                    <div class="author-shop">Fashion Boutique</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <div class="testimonial-text">"The best e-commerce solution I've used. Simple, powerful, and reliable."</div>
+            <div class="testimonial-author">
+                <div class="author-avatar">MN</div>
+                <div class="author-info">
+                    <div class="author-name">Mike Njogu</div>
+                    <div class="author-shop">Sports attire</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="testimonial-dots">
+        <span class="dot active" data-slide="0"></span>
+        <span class="dot" data-slide="1"></span>
+        <span class="dot" data-slide="2"></span>
+    </div>
+</section>
+
+<!-- ABOUT US SECTION -->
+<section id="about" class="about-section">
+    <div class="about-container">
+        <h2 class="section-title">About Shopping Online</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Welcome to Shopping Online - your premier destination for quality products and exceptional shopping experiences! 🛍️</p>
+                <p>We are dedicated to connecting buyers and sellers in a seamless, secure, and user-friendly platform. Our mission is to empower local businesses and provide customers with access to a diverse range of products.</p>
+                <p>From electronics to fashion, food to books - we've got everything you need, all in one place. Join thousands of satisfied customers who trust Shopping Online for their daily needs.</p>
+                <div class="about-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🔒</span>
+                        <h4>Secure Transactions</h4>
+                        <p>Safe and protected payment methods</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🚚</span>
+                        <h4>Fast Delivery</h4>
+                        <p>Quick and reliable shipping</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <h4>Quality Products</h4>
+                        <p>Verified sellers and authentic items</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💬</span>
+                        <h4>24/7 Support</h4>
+                        <p>Always here to help you!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SHOPPING TAB SECTION -->
+<section id="shopping" class="shopping-section">
+    <div class="shopping-container">
+        <h2 class="section-title">🛍️ Explore All Shops</h2>
+        <div class="shopping-intro">
+            <h3>Discover Amazing Products from Our Trusted Sellers</h3>
+            <p>Browse through our curated collection of shops, from premium sellers to quality free accounts</p>
+        </div>
+        
+        <!-- Shop Categories -->
+        <div class="shop-categories">
+            <button class="category-btn active" onclick="filterShops('all')">
+                <i class="fas fa-store"></i> All Shops
+            </button>
+            <button class="category-btn premium" onclick="filterShops('premium')">
+                <i class="fas fa-crown"></i> Premium Shops
+            </button>
+            <button class="category-btn free" onclick="filterShops('free')">
+                <i class="fas fa-gift"></i> Free Shops
+            </button>
+        </div>
+        
+        <!-- Shops Grid -->
+        <div id="shops-grid" class="shops-grid">
+            <!-- Shops will be loaded dynamically -->
+        </div>
+        
+        <!-- Loading State -->
+        <div id="shops-loading" class="shops-loading">
+            <div class="loading-spinner"></div>
+            <p>Loading amazing shops...</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div id="shops-empty" class="shops-empty" style="display: none;">
+            <div class="empty-icon">🏪</div>
+            <h3>No Shops Available</h3>
+            <p>Check back soon for amazing shops!</p>
+        </div>
+        
+        <!-- Facebook Referral Actions -->
+        <div id="facebook-actions" class="facebook-actions" style="display: none;">
+            <div class="facebook-referral-banner">
+                <i class="fab fa-facebook"></i> Welcome from Facebook!
+            </div>
+            <div class="action-buttons">
+                <button class="btn primary make-order-btn" onclick="makeOrder()">
+                    <i class="fab fa-whatsapp"></i> Make Order
+                </button>
+                <button class="btn secondary explore-btn" onclick="exploreCurrentShop()">
+                    <i class="fas fa-store"></i> Explore Shop
+                </button>
+                <button class="btn info home-btn" onclick="goToHomepage()">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button class="btn secondary back-to-fb-btn" onclick="backToFacebook()">
+                    <i class="fab fa-facebook"></i> Back to Facebook
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>We're Here to Help!</h3>
+                <p>Have questions? Need assistance? We'd love to hear from you!</p>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="contact-icon">📱</span>
+                        <div class="contact-info-text">
+                            <h4>Phone/WhatsApp</h4>
+                            <p>+254 707584594</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <div class="contact-info-text">
+                            <h4>Email</h4>
+                            <p>josephgthuku@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <div class="contact-info-text">
+                            <h4>Location</h4>
+                            <p>Nairobi, Kenya</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">⏰</span>
+                        <div class="contact-info-text">
+                            <h4>Business Hours</h4>
+                            <p>Monday - friday: 8AM - 8PM</p>
+                            <p>Sunday: 10AM - 6PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <h3>Send Us a Message</h3>
+                <form>
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Your Phone Number" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn primary" style="background-color: #007bff; color: #ffffff;">Send Message</button>
+                        <button type="button" class="btn secondary email-btn" style="background-color: #6c757d; color: #ffffff;">📧 Email Us Directly</button>
+                        <button type="button" class="btn whatsapp-btn" style="background-color: #34c759; color: #ffffff;">💬 WhatsApp Us Directly</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HELP SECTION -->
+<section id="help" class="help-section">
+    <div class="help-container">
+        <h2 class="section-title">Help & Support</h2>
+        <div class="help-content">
+            <div class="help-intro">
+                <h3>How Can We Help You?</h3>
+                <p>Find answers to common questions or reach out to our support team for personalized assistance.</p>
+            </div>
+            
+            <div class="help-categories">
+                <div class="help-category">
+                    <div class="help-icon">🛍️</div>
+                    <h4>For Buyers</h4>
+                    <ul>
+                        <li>How to place an order</li>
+                        <li>Payment methods</li>
+                        <li>Track your order</li>
+                        <li>Return policy</li>
+                        <li>Product quality issues</li>
+                    </ul>
+                </div>
+                
+                <div class="help-category">
+                    <div class="help-icon">🏪</div>
+                    <h4>For Sellers</h4>
+                    <ul>
+                        <li>How to create a shop</li>
+                        <li>Listing products</li>
+                        <li>Managing orders</li>
+                        <li>Payment processing</li>
+                        <li>Seller dashboard guide</li>
+                    </ul>
+                </div>
+                
+                <div class="help-category">
+                    <div class="help-icon">⚙️</div>
+                    <h4>Account Help</h4>
+                    <ul>
+                        <li>Registration issues</li>
+                        <li>Login problems</li>
+                        <li>Profile settings</li>
+                        <li>Account verification</li>
+                        <li>Security tips</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="help-contact">
+                <h3>Still Need Help? 🤔</h3>
+                <p>Our dedicated support team is ready to assist you with any questions or concerns.</p>
+                <div class="help-contact-info">
+                    <p><strong>📱 Call/WhatsApp:</strong> +254 707584594</p>
+                    <p><strong>📧 Email:</strong> josephgthuku@gmail.com</p>
+                    <p><strong>⏰ Response Time:</strong> Usually within 2-4 hours</p>
+                </div>
+                <div class="help-buttons">
+                    <button class="btn primary" style="background-color: #007bff; color: #ffffff;">Start Live Chat</button>
+                    <button class="btn secondary" style="background-color: #6c757d; color: #ffffff;">Email Support</button>
+                    <button class="btn whatsapp-help-btn" style="background-color: #34c759; color: #ffffff;">💬 WhatsApp Support</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Shopping Online</h3>
+            <p>Your trusted marketplace for quality products</p>
+
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#help">Help</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy;2026 shoppingonline@J.G.... All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Firebase Initialization -->
+
+<script>
+// Only initialize Firebase if NOT on premium dashboard page
+if (!window.location.pathname.includes('premium-dashboard.html')) {
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+      authDomain: "shopping-online-6ba36.firebaseapp.com",
+      projectId: "shopping-online-6ba36",
+      storageBucket: "shopping-online-6ba36.appspot.com",
+      messagingSenderId: "404079444441",
+      appId: "1:404079444441:web:bca6b897877295f92519c8"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Make Firebase globally available to all scripts
+    window.db = firebase.firestore();
+    window.storage = firebase.storage();
+    window.auth = firebase.auth();
+    
+    console.log("Firebase initialized successfully!");
+}
+</script>
+
+<!-- Load scripts AFTER Firebase initialization -->
+<script src="js/carousel.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/main.js"></script>
+
+<!-- Load Firebase-dependent scripts LAST -->
+<script src="js/account.js"></script>
+<script src="JS/shopping-tab.js"></script>
+<link rel="stylesheet" href="CSS/shopping-tab.css">
+
+</body>
+
+</html>

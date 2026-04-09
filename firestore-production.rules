@@ -1,0 +1,228 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isShopOwner(shopId) {
+      return request.auth.uid == shopId;
+    }
+    
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+    
+    function isPremium() {
+      return request.auth.token.premium == true;
+    }
+
+    // PRODUCTS - Multi-vendor marketplace security
+    match /products/{productId} {
+      // Public read access for marketplace browsing
+      allow read: if true;
+      
+      // Create: Only authenticated users can create products with validation
+      allow create: if isSignedIn() && 
+                       request.resource.data.shopId == request.auth.uid &&
+                       request.resource.data.status in ['active', 'draft', 'inactive'] &&
+                       // Validate image/video URLs (Firebase or Cloudinary)
+                       (request.resource.data.imageUrl == null || 
+                        request.resource.data.imageUrl.matches('https://firebasestorage\\.googleapis\\.com/.*') ||
+                        request.resource.data.imageUrl.matches('https://res\\.cloudinary\\.com/.*') ||
+                        request.resource.data.imageUrl.matches('https://api\\.cloudinary\\.com/.*') ||
+                        request.resource.data.imageUrl.matches('https://video\\.cloudinary\\.com/.*')) &&
+                       // Validate video URLs (Firebase or Cloudinary)
+                       (request.resource.data.videoUrl == null || 
+                        request.resource.data.videoUrl.matches('https://firebasestorage\\.googleapis\\.com/.*') ||
+                        request.resource.data.videoUrl.matches('https://res\\.cloudinary\\.com/.*') ||
+                        request.resource.data.videoUrl.matches('https://api\\.cloudinary\\.com/.*') ||
+                        request.resource.data.videoUrl.matches('https://video\\.cloudinary\\.com/.*'));
+      
+      // Update/Delete: Only shop owners can modify their products
+      allow update, delete: if isSignedIn() && 
+                               resource.data.shopId == request.auth.uid &&
+                               // Prevent ownership transfer attacks
+                               request.resource.data.shopId == resource.data.shopId;
+    }
+    
+    // USERS - User profile management with marketplace roles
+    match /users/{userId} {
+      // Public read for approved shops (marketplace browsing)
+      allow read: if isSignedIn() && 
+                      resource.data.status == 'approved' &&
+                      resource.data.accountType in ['basic', 'premium'];
+      
+      // Users can only update their own profile
+      allow update: if isOwner(userId);
+      
+      // Admin can manage any user
+      allow delete: if isAdmin();
+      
+      // Creation handled by Firebase Auth
+      allow create: if false;
+    }
+    
+    // SHOP PROFILES - Enhanced marketplace shop security
+    match /shops/{shopId} {
+      // Public read for approved shops
+      allow read: if resource.data.status == 'approved';
+      
+      // Shop owners can update their shop
+      allow update: if isShopOwner(shopId) &&
+                       // Prevent critical field changes
+                       request.resource.data.ownerId == resource.data.ownerId;
+      
+      // Only admins can delete shops
+      allow delete: if isAdmin();
+    }
+    
+    // ORDERS - Multi-party transaction security
+    match /orders/{orderId} {
+      // Buyers and sellers can read their orders
+      allow read: if isSignedIn() && 
+                      (resource.data.buyerId == request.auth.uid || 
+                       resource.data.shopId == request.auth.uid);
+      
+      // Create orders (buyers only)
+      allow create: if isSignedIn() && 
+                       request.resource.data.buyerId == request.auth.uid &&
+                       request.resource.data.shopId != request.auth.uid; // Can't buy from self
+      
+      // Update order status (sellers only)
+      allow update: if isSignedIn() && 
+                       resource.data.shopId == request.auth.uid &&
+                       // Only allow status updates, not price changes
+                       request.resource.data.diff(resource.data).affectedKeys().hasAll(['status', 'trackingNumber']);
+      
+      // No order deletion (audit trail)
+      allow delete: if false;
+    }
+    
+    // ANALYTICS - Shop-specific analytics with privacy
+    match /analytics/{docId} {
+      // Shop owners can only read their analytics
+      allow read: if isSignedIn() && 
+                      resource.data.shopId == request.auth.uid;
+      
+      // System and user actions can create analytics
+      allow create: if isSignedIn() && 
+                       (request.resource.data.shopId == request.auth.uid || 
+                        request.resource.data.type == 'system');
+      
+      // No updates (analytics are immutable)
+      allow update: if false;
+      
+      // Only admins can delete analytics
+      allow delete: if isAdmin();
+    }
+    
+    // REVIEWS - Public reviews with ownership control
+    match /reviews/{reviewId} {
+      // Public read for marketplace transparency
+      allow read: if true;
+      
+      // Only verified buyers can create reviews with validation
+      allow create: if isSignedIn() && 
+                       request.resource.data.buyerId == request.auth.uid &&
+                       // Prevent duplicate reviews
+                       request.resource.data.orderId != null &&
+                       // Validate rating is between 1-5
+                       request.resource.data.rating is number &&
+                       request.resource.data.rating >= 1 &&
+                       request.resource.data.rating <= 5;
+      
+      // Users can update/delete their own reviews
+      allow update, delete: if isSignedIn() && 
+                               resource.data.buyerId == request.auth.uid &&
+                               // Only allow text/content updates, not rating changes
+                               request.resource.data.diff(resource.data).affectedKeys().hasAll(['comment', 'helpful']);
+    }
+    
+    // MESSAGES - Secure messaging between marketplace participants
+    match /messages/{messageId} {
+      // Participants can read their messages
+      allow read: if isSignedIn() && 
+                      (resource.data.senderId == request.auth.uid || 
+                       resource.data.receiverId == request.auth.uid);
+      
+      // Users can send messages
+      allow create: if isSignedIn() && 
+                       request.resource.data.senderId == request.auth.uid &&
+                       request.resource.data.receiverId != request.auth.uid;
+      
+      // No message editing (audit trail)
+      allow update: if false;
+      
+      // Sender can delete their own messages
+      allow delete: if isSignedIn() && 
+                      resource.data.senderId == request.auth.uid;
+    }
+    
+    // NOTIFICATIONS - User-specific notifications
+    match /notifications/{notificationId} {
+      // Users can only read their notifications
+      allow read: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // System and user actions can create notifications
+      allow create: if isSignedIn() && 
+                       (request.resource.data.userId == request.auth.uid || 
+                        request.resource.data.type == 'system');
+      
+      // Users can mark their notifications as read
+      allow update: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasAll(['read']);
+      
+      // Users can delete their notifications
+      allow delete: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid;
+    }
+    
+    // PREMIUM REQUESTS - Subscription management
+    match /premiumRequests/{requestId} {
+      // Users can read their requests
+      allow read: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // Users can create premium requests
+      allow create: if isSignedIn() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Admins can update request status
+      allow update: if isAdmin();
+      
+      // Users can delete their pending requests
+      allow delete: if isSignedIn() && 
+                      resource.data.userId == request.auth.uid &&
+                      resource.data.status == 'pending';
+    }
+    
+    // MARKETPLACE SETTINGS - Admin-only configuration
+    match /marketplace/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    // ADMIN COLLECTIONS - Restricted admin access
+    match /admin/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    // SYSTEM LOGS - Admin-only audit logs
+    match /systemLogs/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    // DEFAULT DENY - Secure by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

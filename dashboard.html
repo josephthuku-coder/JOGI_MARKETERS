@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Dashboard - Shopping Online</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta http-equiv="Permissions-Policy" content="unload=(self)">
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/images/icons/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="assets/images/icons/favicon-144.png" type="image/png" sizes="144x144">
+    <link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="assets/images/icons/favicon-64.png" type="image/png" sizes="64x64">
+    <link rel="icon" href="assets/images/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="assets/images/icons/favicon-16.png" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="assets/images/icons/favicon-96.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-192.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-144.png" sizes="144x144">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-96.png" sizes="96x96">
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo">
+                <h2>🛍️ Shopping Online</h2>
+                <span class="free-badge">
+                    <i class="fas fa-gift"></i>
+                    FREE ACCOUNT
+                </span>
+            </div>
+            <div class="user-info">
+                <span class="welcome-text">Welcome, <span id="shopName">Kamau's Shop</span>!</span>
+                <div class="account-limits">
+                    <span><i class="fas fa-box"></i> <span id="productCount">0</span>/5 Products</span>
+                    <button class="upgrade-btn" onclick="window.location.href='upgrade-to-premium.html'">
+                        <i class="fas fa-crown"></i> Upgrade to Premium
+                    </button>
+                    <button class="switch-account-btn" onclick="switchAccount()" 
+                            style="background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px; font-weight: 600;">
+                        <i class="fas fa-exchange-alt"></i> 
+                        Switch to Premium
+                    </button>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        <div class="free-banner">
+            <div class="banner-text">
+                <i class="fas fa-info-circle"></i>
+                <span>Free Account - Limited to 5 Products. Upgrade for Unlimited Products!</span>
+                <button class="banner-upgrade-btn" onclick="window.location.href='upgrade-to-premium.html'">
+                    <i class="fas fa-rocket"></i> Upgrade Now
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('upload')">
+                <i class="fas fa-upload"></i> Upload Products
+            </button>
+            <button class="tab-btn" onclick="switchTab('shop')">
+                <i class="fas fa-store"></i> My Public Shop
+            </button>
+        </div>
+
+        <!-- Upload Products Tab -->
+        <div id="upload-tab" class="tab-content active">
+            <div class="upload-container">
+                <h3>📤 Upload New Product</h3>
+                <p class="upload-limit">Free Account: Maximum 5 products</p>
+                
+                <form id="upload-form" class="upload-form" onsubmit="handleFormSubmit(event)">
+                    <div class="form-group">
+                        <label for="product-photo">Product Photo</label>
+                        <div class="upload-options">
+                            <button type="button" class="btn primary camera-btn" onclick="openCamera()">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <button type="button" class="btn success desktop-upload-btn" onclick="openDesktopUpload()">
+                                <i class="fas fa-desktop"></i> Desktop Upload
+                            </button>
+                            <button type="button" class="btn info phone-storage-btn" onclick="openPhoneStorage()">
+                                <i class="fas fa-mobile-alt"></i> Phone Storage
+                            </button>
+                            <button type="button" class="btn secondary browse-products-btn" onclick="browseProducts()">
+                                <i class="fas fa-camera"></i> Screenshot Upload
+                            </button>
+                            <button type="button" class="btn warning" onclick="forceBase64Upload()" title="Use this if normal upload fails">
+                                <i class="fas fa-exclamation-triangle"></i> Force Upload
+                            </button>
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                            <input type="hidden" id="imageUrl" value="">
+                        </div>
+                        <div id="photo-preview" class="photo-preview">
+                            <img id="preview-img" src="" alt="Product preview" style="display: none;">
+                            <div id="upload-status" style="display: none; margin-top: 10px; padding: 10px; background: #e3f2fd; color: white; border-radius: 5px; text-align: center;">
+                                <i class="fas fa-spinner fa-spin"></i> Uploading image...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-name">Product Name</label>
+                        <input type="text" id="product-name" placeholder="Enter product name..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-price">Product Price</label>
+                        <div class="price-input-group">
+                            <span class="currency-prefix">Ksh</span>
+                            <input type="number" id="product-price" placeholder="0.00" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-description">Product Description</label>
+                        <textarea id="product-description" placeholder="Describe your product briefly..." rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary" onclick="clearForm()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                        <button type="submit" class="btn primary">
+                            <i class="fas fa-check"></i> Complete Upload
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Upload Status -->
+                <div id="main-upload-status" class="upload-status" style="display: none;">
+                    <div class="status-message">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Uploading product...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Public Shop Tab -->
+        <div id="shop-tab" class="tab-content">
+            <div class="shop-container">
+                <div class="shop-header">
+                    <h3>🏪 My Public Shop</h3>
+                    <div class="shop-actions">
+                        <button class="btn primary" onclick="selectAllProducts()">
+                            <i class="fas fa-check-square"></i> Select All
+                        </button>
+                        <button class="btn secondary" onclick="shareSelectedToFacebook()">
+                            <i class="fab fa-facebook"></i> Share Selected to Facebook
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="products-grid">
+                    <!-- Products will be loaded here dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-shop" class="empty-shop">
+                    <div class="empty-icon">📦</div>
+                    <h3>No Products Yet</h3>
+                    <p>Start by uploading your first product!</p>
+                    <button class="btn primary" onclick="switchTab('upload')">
+                        <i class="fas fa-plus"></i> Upload First Product
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Product View Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-product-name">Product Details</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="product-image-container">
+                    <img id="modal-product-image" src="" alt="Product">
+                </div>
+                <div class="product-details">
+                    <div class="price-display">
+                        <span class="currency">Ksh</span>
+                        <span id="modal-product-price">0</span>
+                    </div>
+                    <p id="modal-product-description">Product description here...</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn secondary" onclick="shareSingleToFacebook()">
+                    <i class="fab fa-facebook"></i> Share to Facebook
+                </button>
+                <button class="btn primary" onclick="makeOrder()">
+                    <i class="fab fa-whatsapp"></i> Make Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Firebase Initialization -->
+    <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+      authDomain: "shopping-online-6ba36.firebaseapp.com", 
+      projectId: "shopping-online-6ba36",
+      storageBucket: "shopping-online-6ba36.appspot.com",
+      messagingSenderId: "404079444441",
+      appId: "1:404079444441:web:bca6b897877295f92519c8"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    </script>
+
+    <!-- Dashboard Scripts -->
+    <script src="JS/dashboard.js?v=20250331-6"></script>
+</body>
+</html>

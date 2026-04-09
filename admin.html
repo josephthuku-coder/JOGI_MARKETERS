@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Shopping Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/admin-panel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/images/icons/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="assets/images/icons/favicon-144.png" type="image/png" sizes="144x144">
+    <link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="assets/images/icons/favicon-64.png" type="image/png" sizes="64x64">
+    <link rel="icon" href="assets/images/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="assets/images/icons/favicon-16.png" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="assets/images/icons/favicon-96.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-192.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-144.png" sizes="144x144">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-96.png" sizes="96x96">
+</head>
+<body class="admin-body">
+    <!-- Admin Login Screen -->
+    <div id="admin-login" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="admin-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>ADMIN PANEL</span>
+                </div>
+                <p class="login-subtitle">Shopping Online Master Control</p>
+            </div>
+            <form id="admin-login-form" class="login-form">
+                <div class="form-group">
+                    <label>Admin Access Code</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="admin-code" placeholder="Enter admin access code" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn admin-login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Access Master Admin Panel
+                </button>
+                <div id="login-error" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <div class="admin-brand">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>MASTER ADMIN</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="admin-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span id="total-users">0</span>
+                        <small>Total Users</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-crown"></i>
+                        <span id="premium-users">0</span>
+                        <small>Premium</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span id="monthly-revenue">Ksh 0</span>
+                        <small>Revenue</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-bell"></i>
+                        <span id="pending-approvals">0</span>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="admin-actions">
+                    <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn-icon" onclick="refreshData()" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn-icon" onclick="exportData()" title="Export Data">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn-icon logout-btn" onclick="adminLogout()" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Navigation -->
+        <nav class="admin-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab" data-tab="home" onclick="goToHome()">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-tab active" data-tab="users" onclick="switchTab('users')">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                    <span class="badge" id="users-badge">0</span>
+                </button>
+                <button class="nav-tab" data-tab="inbox" onclick="switchTab('inbox')">
+                    <i class="fas fa-inbox"></i>
+                    <span>Inbox</span>
+                    <span class="badge" id="inbox-badge">0</span>
+                </button>
+                <button class="nav-tab" data-tab="control" onclick="switchTab('control')">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Control</span>
+                    <span class="badge" id="control-badge">0</span>
+                </button>
+                <button class="nav-tab" data-tab="monitor" onclick="switchTab('monitor')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Monitor</span>
+                    <span class="badge" id="monitor-badge">0</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="admin-hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Welcome Master Admin!
+                    </h1>
+                    <p class="hero-subtitle">
+                        This is your complete control center for managing the Shopping Online platform
+                    </p>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <i class="fas fa-users"></i>
+                        <span class="stat-number" id="hero-total-users">0</span>
+                        <span class="stat-label">Total Users</span>
+                    </div>
+                    <div class="hero-stat">
+                        <i class="fas fa-crown"></i>
+                        <span class="stat-number" id="hero-premium-users">0</span>
+                        <span class="stat-label">Premium</span>
+                    </div>
+                    <div class="hero-stat">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span class="stat-number" id="hero-monthly-revenue">Ksh 0</span>
+                        <span class="stat-label">Revenue</span>
+                    </div>
+                    <div class="hero-stat">
+                        <i class="fas fa-bell"></i>
+                        <span class="stat-number" id="hero-pending-approvals">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <!-- USERS TAB -->
+            <div id="users-tab" class="tab-content active">
+                <div class="tab-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-users"></i> Users Management</h2>
+                        <div class="account-filters">
+                            <button class="filter-btn active" data-filter="all" onclick="filterUsers('all')">
+                                All Users
+                            </button>
+                            <button class="filter-btn" data-filter="premium" onclick="filterUsers('premium')">
+                                <i class="fas fa-crown"></i>
+                                Premium
+                            </button>
+                            <button class="filter-btn" data-filter="free" onclick="filterUsers('free')">
+                                <i class="fas fa-user"></i>
+                                Free
+                            </button>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="user-search" placeholder="Search users..." onkeyup="searchUsers()">
+                        </div>
+                        <button class="btn primary" onclick="bulkApprove()">
+                            <i class="fas fa-check-double"></i>
+                            Bulk Approve
+                        </button>
+                        <button class="btn secondary" onclick="exportUsers()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="users-grid">
+                    <div class="users-table-container">
+                        <table class="admin-table users-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortUsers('shopName')">
+                                        Shop Name <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('userId')">
+                                        User ID <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('contact')">
+                                        Contact <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('email')">
+                                        Email <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('accountType')">
+                                        Type <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('timestamp')">
+                                        Joined <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th onclick="sortUsers('status')">
+                                        Status <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INBOX TAB -->
+            <div id="inbox-tab" class="tab-content">
+                <div class="tab-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-inbox"></i> Messages & Notifications</h2>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn primary" onclick="markAllRead()">
+                            <i class="fas fa-check-double"></i>
+                            Mark All Read
+                        </button>
+                        <button class="btn secondary" onclick="exportInbox()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="inbox-categories">
+                    <div class="category-tabs">
+                        <button class="category-tab" data-category="approvals" onclick="switchCategory('approvals')">
+                            <i class="fas fa-user-check"></i>
+                            Account Approvals
+                            <span class="badge" id="approvals-count">0</span>
+                        </button>
+                        <button class="category-tab" data-category="approved" onclick="switchCategory('approved')">
+                            <i class="fas fa-check-circle"></i>
+                            Approved Requests
+                            <span class="badge" id="approved-count">0</span>
+                        </button>
+                        <button class="category-tab" data-category="payments" onclick="switchCategory('payments')">
+                            <i class="fas fa-credit-card"></i>
+                            Payment Notifications
+                            <span class="badge" id="payments-count">0</span>
+                        </button>
+                        <button class="category-tab" data-category="transactions" onclick="switchCategory('transactions')">
+                            <i class="fas fa-shopping-cart"></i>
+                            Customer Transactions
+                            <span class="badge" id="transactions-count">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="inbox-content">
+                    <div id="approvals-content" class="category-content">
+                        <div class="messages-list" id="approvals-list">
+                            <!-- Approval requests will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="approved-content" class="category-content">
+                        <div class="messages-list" id="approved-list">
+                            <!-- Approved requests will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="payments-content" class="category-content">
+                        <div class="messages-list" id="payments-list">
+                            <!-- Payment notifications will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="transactions-content" class="category-content">
+                        <div class="messages-list" id="transactions-list">
+                            <!-- Transaction messages will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROL TAB -->
+            <div id="control-tab" class="tab-content">
+                <div class="tab-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-sliders-h"></i> Account Control</h2>
+                    </div>
+                    <div class="header-right">
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="control-search" placeholder="Search accounts..." onkeyup="searchControl()">
+                        </div>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all" onclick="filterControl('all')">
+                                All Accounts
+                            </button>
+                            <button class="filter-btn" data-filter="premium" onclick="filterControl('premium')">
+                                <i class="fas fa-crown"></i>
+                                Premium
+                            </button>
+                            <button class="filter-btn" data-filter="free" onclick="filterControl('free')">
+                                <i class="fas fa-user"></i>
+                                Free
+                            </button>
+                        </div>
+                        <button class="btn danger" onclick="bulkMute()">
+                            <i class="fas fa-volume-mute"></i>
+                            Bulk Mute
+                        </button>
+                        <button class="btn success" onclick="bulkUnmute()">
+                            <i class="fas fa-volume-up"></i>
+                            Bulk Unmute
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-grid">
+                    <div class="control-table-container">
+                        <table class="admin-table control-table">
+                            <thead>
+                                <tr>
+                                    <th>Shop Name</th>
+                                    <th>Contact</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="control-tbody">
+                                <!-- Control accounts will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MONITOR TAB -->
+            <div id="monitor-tab" class="tab-content">
+                <div class="tab-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-chart-line"></i> Market Analytics & Payment Monitor</h2>
+                    </div>
+                    <div class="header-right">
+                        <div class="time-filter">
+                            <select id="time-range" onchange="updateTimeRange()">
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month" selected>This Month</option>
+                                <option value="year">This Year</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                        <button class="btn primary" onclick="refreshMonitor()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                        <button class="btn secondary" onclick="exportMonitor()">
+                            <i class="fas fa-download"></i>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Market Overview Stats -->
+                <div class="market-overview">
+                    <div class="market-stat-card revenue">
+                        <div class="stat-header">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h4>Total Revenue</h4>
+                        </div>
+                        <div class="stat-value" id="total-revenue">Ksh 0</div>
+                        <div class="stat-change positive" id="revenue-change">
+                            <i class="fas fa-arrow-up"></i> +0%
+                        </div>
+                    </div>
+                    
+                    <div class="market-stat-card transactions">
+                        <div class="stat-header">
+                            <i class="fas fa-credit-card"></i>
+                            <h4>Transactions</h4>
+                        </div>
+                        <div class="stat-value" id="total-transactions">0</div>
+                        <div class="stat-change positive" id="transactions-change">
+                            <i class="fas fa-arrow-up"></i> +0%
+                        </div>
+                    </div>
+                    
+                    <div class="market-stat-card users">
+                        <div class="stat-header">
+                            <i class="fas fa-users"></i>
+                            <h4>Active Users</h4>
+                        </div>
+                        <div class="stat-value" id="active-users-count">0</div>
+                        <div class="stat-change positive" id="users-change">
+                            <i class="fas fa-arrow-up"></i> +0%
+                        </div>
+                    </div>
+                    
+                    <div class="market-stat-card avg-order">
+                        <div class="stat-header">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h4>Avg Order Value</h4>
+                        </div>
+                        <div class="stat-value" id="avg-order-value">Ksh 0</div>
+                        <div class="stat-change negative" id="avg-change">
+                            <i class="fas fa-arrow-down"></i> -0%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Charts Section -->
+                <div class="trading-dashboard">
+                    <div class="chart-section">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-candlestick"></i> Market Performance</h3>
+                            <div class="chart-controls">
+                                <button class="chart-btn active" data-chart="candlestick" onclick="switchChart('candlestick')">Candlestick</button>
+                                <button class="chart-btn" data-chart="line" onclick="switchChart('line')">Line</button>
+                                <button class="chart-btn" data-chart="bar" onclick="switchChart('bar')">Bar</button>
+                            </div>
+                        </div>
+                        <div class="chart-container large">
+                            <canvas id="market-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h4><i class="fas fa-chart-pie"></i> Revenue Distribution</h4>
+                            <canvas id="revenue-pie-chart"></canvas>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h4><i class="fas fa-chart-area"></i> Payment Methods</h4>
+                            <canvas id="payment-methods-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment History Table -->
+                <div class="payment-history-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Payment History</h3>
+                        <div class="payment-controls">
+                            <input type="text" id="payment-search" placeholder="Search payments..." onkeyup="searchPayments()">
+                            <select id="payment-filter" onchange="filterPayments()">
+                                <option value="all">All Payments</option>
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-table-container">
+                        <table class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortPayments('date')">Date <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortPayments('user')">User <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortPayments('type')">Type <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortPayments('amount')">Amount <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortPayments('method')">Method <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortPayments('status')">Status <i class="fas fa-sort"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-tbody">
+                                <!-- Payments will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="payment-pagination">
+                        <!-- Pagination will be added here -->
+                    </div>
+                </div>
+
+                <!-- Real-time Activity Feed -->
+                <div class="activity-feed">
+                    <div class="feed-header">
+                        <h3><i class="fas fa-stream"></i> Live Activity Feed</h3>
+                        <div class="feed-controls">
+                            <span class="live-indicator">
+                                <span class="live-dot"></span>
+                                LIVE
+                            </span>
+                        </div>
+                    </div>
+                    <div class="activity-feed-container" id="activity-feed">
+                        <!-- Real-time activities will appear here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>User Details</h3>
+                <button class="close-btn" onclick="closeModal('user-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-details-grid">
+                    <div class="detail-section">
+                        <h4>Account Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Shop Name:</label>
+                                <span id="detail-shop-name">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>User ID:</label>
+                                <span id="detail-user-id">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Email:</label>
+                                <span id="detail-email">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Phone:</label>
+                                <span id="detail-phone">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Account Type:</label>
+                                <span id="detail-account-type">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Joined:</label>
+                                <span id="detail-joined">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Shop Statistics</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Total Products:</label>
+                                <span id="detail-products">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Total Views:</label>
+                                <span id="detail-views">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Total Shares:</label>
+                                <span id="detail-shares">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Total Orders:</label>
+                                <span id="detail-orders">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn success" onclick="approveUser()">
+                    <i class="fas fa-check"></i>
+                    Approve Account
+                </button>
+                <button class="btn danger" onclick="denyUser()">
+                    <i class="fas fa-times"></i>
+                    Deny Account
+                </button>
+                <button class="btn warning" onclick="muteUser()">
+                    <i class="fas fa-volume-mute"></i>
+                    Mute Account
+                </button>
+                <button class="btn secondary" onclick="sendMessage()">
+                    <i class="fas fa-envelope"></i>
+                    Send Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send Message to User</h3>
+                <button class="close-btn" onclick="closeModal('message-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Recipient</label>
+                    <input type="text" id="message-recipient" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Message Type</label>
+                    <select id="message-type">
+                        <option value="general">General Message</option>
+                        <option value="warning">Warning</option>
+                        <option value="suspension">Suspension Notice</option>
+                        <option value="approval">Account Approval</option>
+                        <option value="rejection">Account Rejection</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message-content" rows="5" placeholder="Enter your message..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn primary" onclick="sendMessageToUser()">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Message
+                </button>
+                <button class="btn secondary" onclick="closeModal('message-modal')">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- EmailJS for Email Notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Admin Panel JavaScript -->
+    <script src="JS/admin-panel.js"></script>
+    
+    <!-- Fallback Functions -->
+    <script>
+        // Fallback switchTab function in case main function doesn't load
+        function switchTab(tabName) {
+            console.log('Fallback switchTab called with:', tabName);
+            
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const activeContent = document.getElementById(`${tabName}-tab`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+        }
+        
+        // Fallback category switch
+        function switchCategory(category) {
+            console.log('Fallback switchCategory called with:', category);
+            
+            // Update category buttons
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeCategory = document.querySelector(`[data-category="${category}"]`);
+            if (activeCategory) {
+                activeCategory.classList.add('active');
+            }
+            
+            // Update category content
+            document.querySelectorAll('.category-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const activeContent = document.getElementById(`${category}-content`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+        }
+        
+        // Fallback togglePassword function
+        function togglePassword() {
+            const passwordInput = document.getElementById('admin-code');
+            const toggleBtn = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.classList.remove('fa-eye');
+                toggleBtn.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.classList.remove('fa-eye-slash');
+                toggleBtn.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>

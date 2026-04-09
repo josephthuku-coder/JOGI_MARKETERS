@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Dashboard - Shopping Online</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/premium-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Permissions-Policy" content="unload=(self)">
+    <link rel="icon" href="assets/images/icons/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/images/icons/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="assets/images/icons/favicon-144.png" type="image/png" sizes="144x144">
+    <link rel="icon" href="assets/images/icons/favicon-96.png" type="image/png" sizes="96x96">
+    <link rel="icon" href="assets/images/icons/favicon-64.png" type="image/png" sizes="64x64">
+    <link rel="icon" href="assets/images/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="assets/images/icons/favicon-16.png" type="image/png" sizes="16x16">
+    <link rel="shortcut icon" href="assets/images/icons/favicon-96.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-192.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-144.png" sizes="144x144">
+    <link rel="apple-touch-icon" href="assets/images/icons/favicon-96.png" sizes="96x96">
+</head>
+<body>
+    <!-- Premium Dashboard Header -->
+    <header class="premium-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-crown gold-crown"></i>
+                <span class="premium-text">Premium Dashboard</span>
+                <div class="premium-shine"></div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar premium-avatar">
+                    <i class="fas fa-user"></i>
+                    <div class="avatar-ring"></div>
+                </div>
+                <div class="user-details">
+                    <h3 id="shopName">Loading Shop...</h3>
+                    <span class="premium-badge animated">
+                        <i class="fas fa-crown"></i>
+                        PREMIUM MEMBER
+                    </span>
+                    <div class="premium-features">
+                        <span><i class="fas fa-infinity"></i> Unlimited Products</span>
+                        <span><i class="fas fa-rocket"></i> Priority Support</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn switch-btn" onclick="switchAccount()" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); margin-right: 10px;">
+                    <i class="fas fa-exchange-alt"></i>
+                    Switch to Free Shop
+                </button>
+                <button class="btn logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        <div class="premium-banner">
+            <div class="banner-text">
+                <i class="fas fa-star"></i>
+                <span>Experience the Power of Premium Selling</span>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+
+        <!-- Subscription Payment Reminder Widget -->
+        <div id="subscription-widget" class="subscription-widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="widget-title">
+                    <h3>Monthly Subscription</h3>
+                    <p>Keep your premium account active</p>
+                </div>
+                <div class="widget-status">
+                    <span id="payment-status" class="status-badge active">Active</span>
+                </div>
+            </div>
+            
+            <div class="countdown-container">
+                <div class="countdown-display">
+                    <div class="countdown-number" id="days-until-payment">0</div>
+                    <div class="countdown-label">days until payment</div>
+                </div>
+                <div class="payment-info">
+                    <div class="payment-amount">Ksh 200</div>
+                    <div class="payment-due">Due on 28th of every month</div>
+                </div>
+            </div>
+            
+            <div class="payment-action">
+                <button id="pay-now-btn" class="btn payment-btn" onclick="openSubscriptionPayment()" style="z-index: 1000; position: relative;">
+                    <i class="fas fa-mobile-alt"></i>
+                    Pay Monthly Fee
+                </button>
+            </div>
+            
+            <div class="grace-period-info" id="grace-period-info" style="display: none;">
+                <div class="grace-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Grace period active - Pay by 1st to avoid account suspension</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="premium-dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4><i class="fas fa-upload"></i> Upload</h4>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-tab="upload">Upload Products</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4><i class="fas fa-store"></i> Shop</h4>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-tab="my-shop">My Public Shop</a></li>
+                        <li><a href="#" class="nav-link" data-tab="themes">Shop Themes</a></li>
+                        <li><a href="#" class="nav-link" data-tab="inventory">Inventory</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4><i class="fas fa-chart-line"></i> Analytics</h4>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-tab="analytics">Statistics</a></li>
+                        <li><a href="#" class="nav-link" data-tab="sales">Sales Reports</a></li>
+                        <li><a href="#" class="nav-link" data-tab="customers">Customer Insights</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4><i class="fas fa-share-alt"></i> Social Media</h4>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-tab="social-sync">Social Sync</a></li>
+                        <li><a href="#" class="nav-link" data-tab="auto-post">Auto-Post</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4><i class="fas fa-cog"></i> Settings</h4>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-tab="account">Account Settings</a></li>
+                        <li><a href="#" class="nav-link" data-tab="billing">Billing</a></li>
+                        <li><a href="#" class="nav-link" data-tab="support">Premium Support</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <section class="main-content">
+           
+
+            <!-- Upload Products Tab -->
+            <div id="upload-tab" class="tab-content active">
+                <div class="tab-header">
+                    <h2><i class="fas fa-upload"></i> Upload Products</h2>
+                    <div class="upload-stats">
+                        <span class="stat">
+                            <i class="fas fa-box"></i>
+                            Products: <span id="productCount">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-video"></i>
+                            Videos: <span id="videoCount">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-images"></i>
+                            Photos: <span id="photoCount">0</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="upload-container">
+                    <form id="premium-upload-form" class="upload-form">
+                        <!-- Media Upload Section -->
+                        <div class="media-upload-section">
+                            <h3><i class="fas fa-photo-video"></i> Upload Media</h3>
+                            
+                            <!-- Info Box -->
+                            <div class="info-box" style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-left: 4px solid #6c5ce7; padding: 1rem; margin-bottom: 1.5rem; border-radius: 6px;">
+                                <i class="fas fa-database" style="color: #6c5ce7; margin-right: 0.5rem;"></i>
+                                <span>💾 <strong>Local Storage Enabled:</strong> Files stored in your browser. Works immediately, no setup needed. Ready to upgrade to cloud anytime.</span>
+                            </div>
+                            
+                            <!-- Upload Options -->
+                            <div class="upload-options">
+                                <button type="button" class="btn primary camera-btn" onclick="openCamera()">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Take Photo</span>
+                                </button>
+                                <button type="button" class="btn success desktop-upload-btn" onclick="openDesktopUpload()">
+                                    <i class="fas fa-desktop"></i>
+                                    <span>Desktop Upload</span>
+                                </button>
+                                <button type="button" class="btn info phone-storage-btn" onclick="openPhoneStorage()">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span>Phone Storage</span>
+                                </button>
+                                <button type="button" class="btn secondary browse-products-btn" onclick="browseProducts()">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Screenshot Upload</span>
+                                </button>
+                                <button type="button" class="btn warning video-upload-btn" onclick="openVideoUpload()">
+                                    <i class="fas fa-video"></i>
+                                    <span>Video Upload</span>
+                                </button>
+                                <input type="file" id="photo-input" accept="image/*,video/*" style="display: none;" onchange="handleFileSelect(event)">
+                                <input type="file" id="video-input" accept="video/*" style="display: none;" onchange="handleVideoSelect(event)">
+                            </div>
+
+                            <!-- Media Preview Area -->
+                            <div class="media-preview-container">
+                                <div class="preview-grid">
+                                    <div class="preview-slot" id="image-preview-slot">
+                                        <div class="preview-placeholder">
+                                            <i class="fas fa-image"></i>
+                                            <span>Image Preview</span>
+                                        </div>
+                                    </div>
+                                    <div class="preview-slot" id="video-preview-slot">
+                                        <div class="preview-placeholder">
+                                            <i class="fas fa-video"></i>
+                                            <span>Video Preview</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Details Section -->
+                            <div class="product-details-section">
+                                <h3><i class="fas fa-info-circle"></i> Product Details</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="product-name">Product Name *</label>
+                                        <input type="text" id="product-name" name="productName" required placeholder="Enter product name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product-price">Price (Ksh) *</label>
+                                        <input type="number" id="product-price" name="productPrice" required placeholder="0.00" min="0" step="0.01">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="product-category">Category *</label>
+                                        <select id="product-category" name="productCategory" required>
+                                            <option value="">Select Category</option>
+                                            <option value="electronics">Electronics</option>
+                                            <option value="clothing">Clothing & Fashion</option>
+                                            <option value="food">Food & Beverages</option>
+                                            <option value="home">Home & Garden</option>
+                                            <option value="beauty">Beauty & Health</option>
+                                            <option value="sports">Sports & Outdoors</option>
+                                            <option value="books">Books & Media</option>
+                                            <option value="toys">Toys & Games</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product-description">Description *</label>
+                                        <textarea id="product-description" name="productDescription" rows="4" required placeholder="Describe your product..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="product-tags">Tags (comma separated)</label>
+                                        <input type="text" id="product-tags" name="productTags" placeholder="tag1, tag2, tag3">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product-weight">Weight (kg)</label>
+                                        <input type="number" id="product-weight" name="productWeight" placeholder="0.0" min="0" step="0.1">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="product-stock">Stock Quantity *</label>
+                                        <input type="number" id="product-stock" name="productStock" required placeholder="0" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product-shipping">Shipping Method</label>
+                                        <select id="product-shipping" name="productShipping">
+                                            <option value="standard">Standard Shipping</option>
+                                            <option value="express">Express Shipping</option>
+                                            <option value="pickup">Local Pickup</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden Fields for Media -->
+                                <input type="hidden" id="product-image-url" name="productImageUrl">
+                                <input type="hidden" id="product-video-url" name="productVideoUrl">
+
+                                <!-- Action Buttons -->
+                                <div class="shop-actions">
+                                    <button id="view-public-shop-btn" class="btn primary">
+                                        <i class="fas fa-external-link-alt"></i> View Public Shop
+                                    </button>
+                                    <button type="button" class="btn secondary" onclick="clearUploadForm()">
+                                        <i class="fas fa-times"></i> Clear Form
+                                    </button>
+                                    <button type="button" class="btn secondary" onclick="deleteCurrentUploads()">
+                                        <i class="fas fa-trash"></i> Delete Current Uploads
+                                    </button>
+                                    <button type="submit" class="btn primary" id="save-product-btn">
+                                        <i class="fas fa-save"></i> Save to Public Shop
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="my-shop-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-store"></i> My Public Shop</h2>
+                    <div class="shop-stats">
+                        <span class="stat">
+                            <i class="fas fa-eye"></i>
+                            Views: <span id="shopViews">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-share"></i>
+                            Shares: <span id="shopShares">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-shopping-cart"></i>
+                            Orders: <span id="shopOrders">0</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="shop-controls">
+                    <div class="view-controls">
+                        <button class="btn" onclick="setViewMode('grid')">
+                            <i class="fas fa-th"></i>
+                            Grid View
+                        </button>
+                        <button class="btn" onclick="setViewMode('list')">
+                            <i class="fas fa-list"></i>
+                            List View
+                        </button>
+                        <button class="btn" onclick="selectAllProducts()">
+                            <i class="fas fa-check-square"></i>
+                            Select All
+                        </button>
+                    </div>
+                    <div class="share-controls">
+                        <button class="btn social-btn facebook-btn" onclick="shareToFacebook()">
+                            <i class="fab fa-facebook"></i>
+                            Share to Facebook
+                        </button>
+                        <button class="btn social-btn instagram-btn" onclick="shareToInstagram()">
+                            <i class="fab fa-instagram"></i>
+                            Share to Instagram
+                        </button>
+                        <button class="btn social-btn tiktok-btn" onclick="shareToTikTok()">
+                            <i class="fab fa-tiktok"></i>
+                            Share to TikTok
+                        </button>
+                        <button class="btn social-btn whatsapp-btn" onclick="shareToWhatsApp()">
+                            <i class="fab fa-whatsapp"></i>
+                            Share to WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions Toolbar -->
+                <div id="bulk-actions-toolbar" class="bulk-actions-toolbar" style="display: none;">
+                    <div class="toolbar-left">
+                        <span id="selected-count" class="selected-count">0 selected</span>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button class="btn" onclick="selectAllProducts()">
+                            <i class="fas fa-check-double"></i>
+                            Select All
+                        </button>
+                        <button class="btn secondary" onclick="deselectAllProducts()">
+                            <i class="fas fa-times"></i>
+                            Deselect All
+                        </button>
+                        <button class="btn info" onclick="shareSelectedProducts()">
+                            <i class="fas fa-share-alt"></i>
+                            Share Selected
+                        </button>
+                        <button class="btn danger" onclick="deleteSelectedProducts()">
+                            <i class="fas fa-trash"></i>
+                            Delete Selected
+                        </button>
+                    </div>
+                </div>
+
+                <div id="premium-products-container" class="products-grid">
+                    <!-- Products will be loaded here with enhanced display -->
+                </div>
+            </div>
+
+            <!-- Shop Themes Tab -->
+            <div id="themes-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-palette"></i> Shop Themes</h2>
+                    <div class="theme-stats">
+                        <span class="stat">
+                            <i class="fas fa-paint-brush"></i>
+                            Active Theme: <span id="activeTheme">Modern</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-eye"></i>
+                            Preview Mode
+                        </span>
+                    </div>
+                </div>
+
+                <div class="themes-container">
+                    <div class="theme-grid">
+                        <div class="theme-card active" data-theme="modern">
+                            <div class="theme-preview modern-preview"></div>
+                            <h4>Modern</h4>
+                            <p>Clean and contemporary design</p>
+                            <button class="btn primary">Apply Theme</button>
+                        </div>
+                        <div class="theme-card" data-theme="classic">
+                            <div class="theme-preview classic-preview"></div>
+                            <h4>Classic</h4>
+                            <p>Traditional shop layout</p>
+                            <button class="btn secondary">Apply Theme</button>
+                        </div>
+                        <div class="theme-card" data-theme="minimal">
+                            <div class="theme-preview minimal-preview"></div>
+                            <h4>Minimal</h4>
+                            <p>Simple and focused</p>
+                            <button class="btn secondary">Apply Theme</button>
+                        </div>
+                        <div class="theme-card" data-theme="bold">
+                            <div class="theme-preview bold-preview"></div>
+                            <h4>Bold</h4>
+                            <p>Vibrant and eye-catching</p>
+                            <button class="btn secondary">Apply Theme</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventory-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-warehouse"></i> Inventory Management</h2>
+                    <div class="inventory-stats">
+                        <span class="stat">
+                            <i class="fas fa-boxes"></i>
+                            Total Items: <span id="totalItems">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Low Stock: <span id="lowStock">0</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-dollar-sign"></i>
+                            Total Value: $<span id="totalValue">0</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="inventory-container">
+                    <div class="inventory-toolbar">
+                        <button class="btn primary" onclick="addInventoryItem()">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                        <button class="btn secondary" onclick="exportInventory()">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
+                        <button class="btn warning" onclick="reorderStock()">
+                            <i class="fas fa-redo"></i> Reorder
+                        </button>
+                    </div>
+                    <div class="inventory-table-container">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>SKU</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                <!-- Inventory items will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-chart-line"></i> Business Analytics</h2>
+                    <div class="analytics-period">
+                        <select id="periodSelect" class="period-select">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="90">Last 90 Days</option>
+                            <option value="365">Last Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-container">
+                    <div class="analytics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon revenue">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3>$<span id="totalRevenue">0</span></h3>
+                                <p>Total Revenue</p>
+                                <span class="metric-change positive">+12.5%</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon orders">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3><span id="totalOrders">0</span></h3>
+                                <p>Total Orders</p>
+                                <span class="metric-change positive">+8.2%</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon customers">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3><span id="totalCustomers">0</span></h3>
+                                <p>New Customers</p>
+                                <span class="metric-change positive">+15.3%</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon conversion">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h3><span id="conversionRate">0</span>%</h3>
+                                <p>Conversion Rate</p>
+                                <span class="metric-change negative">-2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <h3>Revenue Trend</h3>
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Product Performance</h3>
+                            <canvas id="productChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Reports Tab -->
+            <div id="sales-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-file-invoice-dollar"></i> Sales Reports</h2>
+                    <div class="report-controls">
+                        <button class="btn primary" onclick="generateReport('daily')">
+                            <i class="fas fa-calendar-day"></i> Daily Report
+                        </button>
+                        <button class="btn secondary" onclick="generateReport('weekly')">
+                            <i class="fas fa-calendar-week"></i> Weekly Report
+                        </button>
+                        <button class="btn secondary" onclick="generateReport('monthly')">
+                            <i class="fas fa-calendar-alt"></i> Monthly Report
+                        </button>
+                        <button class="btn warning" onclick="exportReport()">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sales-container">
+                    <div class="report-summary">
+                        <div class="summary-card">
+                            <h3>Current Period</h3>
+                            <div class="summary-item">
+                                <span>Gross Sales:</span>
+                                <strong>$<span id="grossSales">0</span></strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Net Sales:</span>
+                                <strong>$<span id="netSales">0</span></strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Orders:</span>
+                                <strong><span id="periodOrders">0</span></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sales-table-container">
+                        <table class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <!-- Sales data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Insights Tab -->
+            <div id="customers-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-users"></i> Customer Insights</h2>
+                    <div class="customer-filters">
+                        <select id="customerFilter" class="filter-select">
+                            <option value="all">All Customers</option>
+                            <option value="new">New Customers</option>
+                            <option value="returning">Returning Customers</option>
+                            <option value="vip">VIP Customers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="customers-container">
+                    <div class="customer-segments">
+                        <div class="segment-card">
+                            <h3>New Customers</h3>
+                            <div class="segment-metric">
+                                <span class="big-number" id="newCustomerCount">0</span>
+                                <span class="trend positive">↑ 15%</span>
+                            </div>
+                        </div>
+                        <div class="segment-card">
+                            <h3>Returning Rate</h3>
+                            <div class="segment-metric">
+                                <span class="big-number" id="returningRate">0</span>%
+                                <span class="trend positive">↑ 3%</span>
+                            </div>
+                        </div>
+                        <div class="segment-card">
+                            <h3>Average Order Value</h3>
+                            <div class="segment-metric">
+                                <span class="big-number">$<span id="avgOrderValue">0</span></span>
+                                <span class="trend positive">↑ 8%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-table-container">
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Orders</th>
+                                    <th>Total Spent</th>
+                                    <th>Last Order</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customerTableBody">
+                                <!-- Customer data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Sync Tab -->
+            <div id="social-sync-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-share-alt"></i> Social Media Sync</h2>
+                    <div class="sync-status">
+                        <span class="status-indicator online">
+                            <i class="fas fa-circle"></i> Connected
+                        </span>
+                    </div>
+                </div>
+
+                <div class="social-container">
+                    <div class="social-platforms">
+                        <div class="platform-card facebook">
+                            <div class="platform-header">
+                                <i class="fab fa-facebook"></i>
+                                <h4>Facebook</h4>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="facebookSync" checked>
+                                    <label for="facebookSync"></label>
+                                </div>
+                            </div>
+                            <div class="platform-stats">
+                                <span>Followers: <strong>2,456</strong></span>
+                                <span>Posts: <strong>89</strong></span>
+                            </div>
+                        </div>
+                        <div class="platform-card instagram">
+                            <div class="platform-header">
+                                <i class="fab fa-instagram"></i>
+                                <h4>Instagram</h4>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="instagramSync" checked>
+                                    <label for="instagramSync"></label>
+                                </div>
+                            </div>
+                            <div class="platform-stats">
+                                <span>Followers: <strong>5,123</strong></span>
+                                <span>Posts: <strong>156</strong></span>
+                            </div>
+                        </div>
+                        <div class="platform-card twitter">
+                            <div class="platform-header">
+                                <i class="fab fa-twitter"></i>
+                                <h4>Twitter</h4>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="twitterSync">
+                                    <label for="twitterSync"></label>
+                                </div>
+                            </div>
+                            <div class="platform-stats">
+                                <span>Followers: <strong>1,234</strong></span>
+                                <span>Tweets: <strong>234</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sync-actions">
+                        <button class="btn primary" onclick="syncAllPlatforms()">
+                            <i class="fas fa-sync"></i> Sync All Platforms
+                        </button>
+                        <button class="btn secondary" onclick="schedulePosts()">
+                            <i class="fas fa-clock"></i> Schedule Posts
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto-Post Tab -->
+            <div id="auto-post-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-robot"></i> Auto-Post Manager</h2>
+                    <div class="post-status">
+                        <span class="status-indicator active">
+                            <i class="fas fa-circle"></i> Active
+                        </span>
+                    </div>
+                </div>
+
+                <div class="autopost-container">
+                    <div class="post-schedule">
+                        <h3>Posting Schedule</h3>
+                        <div class="schedule-grid">
+                            <div class="schedule-item">
+                                <label>Frequency:</label>
+                                <select id="postFrequency">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                            <div class="schedule-item">
+                                <label>Best Time:</label>
+                                <input type="time" id="bestPostTime" value="14:00">
+                            </div>
+                            <div class="schedule-item">
+                                <label>Time Zone:</label>
+                                <select id="timeZone">
+                                    <option value="EST">Eastern Time</option>
+                                    <option value="CST">Central Time</option>
+                                    <option value="PST">Pacific Time</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-templates">
+                        <h3>Content Templates</h3>
+                        <div class="template-grid">
+                            <div class="template-card">
+                                <h4>Product Launch</h4>
+                                <p>🚀 New product alert! Check out our latest [Product Name] - [Price]. Limited stock available!</p>
+                                <button class="btn secondary">Use Template</button>
+                            </div>
+                            <div class="template-card">
+                                <h4>Flash Sale</h4>
+                                <p>⚡ FLASH SALE! [Discount]% off everything for the next 24 hours only. Don't miss out!</p>
+                                <button class="btn secondary">Use Template</button>
+                            </div>
+                            <div class="template-card">
+                                <h4>Feature Friday</h4>
+                                <p>✨ Feature Friday! This week we're highlighting [Product Name]. Perfect for [Use Case]!</p>
+                                <button class="btn secondary">Use Template</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="autopost-actions">
+                        <button class="btn primary" onclick="startAutopost()">
+                            <i class="fas fa-play"></i> Start Auto-Posting
+                        </button>
+                        <button class="btn warning" onclick="pauseAutopost()">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Settings Tab -->
+            <div id="account-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-user-cog"></i> Account Settings</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3><i class="fas fa-user"></i> Profile Information</h3>
+                        <div class="form-group">
+                            <label>Shop Name</label>
+                            <input type="text" id="shopName" class="form-input" value="My Premium Shop">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="shopEmail" class="form-input" value="user@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="shopPhone" class="form-input" value="+1-234-567-8900">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        <div class="notification-settings">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span>Email Notifications</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="smsNotifications">
+                                <span>SMS Notifications</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="pushNotifications" checked>
+                                <span>Push Notifications</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                        <div class="security-settings">
+                            <button class="btn secondary" onclick="changePassword()">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                            <button class="btn secondary" onclick="enable2FA()">
+                                <i class="fas fa-lock"></i> Enable 2FA
+                            </button>
+                            <button class="btn warning" onclick="viewLoginHistory()">
+                                <i class="fas fa-history"></i> Login History
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn primary" onclick="saveAccountSettings()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn danger" onclick="deleteAccount()">
+                            <i class="fas fa-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Tab -->
+            <div id="billing-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-credit-card"></i> Billing & Subscription</h2>
+                    <div class="billing-status">
+                        <span class="status-indicator premium">
+                            <i class="fas fa-crown"></i> Premium Active
+                        </span>
+                    </div>
+                </div>
+
+                <div class="billing-container">
+                    <div class="subscription-info">
+                        <div class="subscription-card">
+                            <h3>Current Plan</h3>
+                            <div class="plan-details">
+                                <div class="plan-name">Premium Plan</div>
+                                <div class="plan-price">$19.99/month</div>
+                                <div class="plan-features">
+                                    <ul>
+                                        <li>✅ Unlimited Products</li>
+                                        <li>✅ Advanced Analytics</li>
+                                        <li>✅ Social Media Sync</li>
+                                        <li>✅ Priority Support</li>
+                                        <li>✅ Custom Themes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h3>Payment Methods</h3>
+                        <div class="payment-card">
+                            <div class="payment-info">
+                                <i class="fab fa-cc-visa"></i>
+                                <span>••••• 4242</span>
+                                <span class="payment-status active">Active</span>
+                            </div>
+                            <button class="btn secondary">
+                                <i class="fas fa-plus"></i> Add Payment Method
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="billing-history">
+                        <h3>Billing History</h3>
+                        <table class="billing-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billingTableBody">
+                                <tr>
+                                    <td>2026-03-01</td>
+                                    <td>Premium Subscription</td>
+                                    <td>$19.99</td>
+                                    <td><span class="status-paid">Paid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2026-02-01</td>
+                                    <td>Premium Subscription</td>
+                                    <td>$19.99</td>
+                                    <td><span class="status-paid">Paid</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Support Tab -->
+            <div id="support-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-headset"></i> Premium Support</h2>
+                    <div class="support-status">
+                        <span class="status-indicator online">
+                            <i class="fas fa-circle"></i> 24/7 Available
+                        </span>
+                    </div>
+                </div>
+
+                <div class="support-container">
+                    <div class="support-options">
+                        <div class="support-card priority">
+                            <div class="support-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3>Priority Support</h3>
+                            <p>Get instant responses to your queries</p>
+                            <button class="btn primary" onclick="startPriorityChat()">
+                                <i class="fas fa-comments"></i> Start Chat
+                            </button>
+                        </div>
+                        <div class="support-card video">
+                            <div class="support-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3>Video Call Support</h3>
+                            <p>Schedule a video call with our experts</p>
+                            <button class="btn secondary" onclick="scheduleVideoCall()">
+                                <i class="fas fa-calendar"></i> Schedule Call
+                            </button>
+                        </div>
+                        <div class="support-card resources">
+                            <div class="support-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3>Knowledge Base</h3>
+                            <p>Access our comprehensive documentation</p>
+                            <button class="btn secondary" onclick="openKnowledgeBase()">
+                                <i class="fas fa-external-link-alt"></i> Open Resources
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="support-tickets">
+                        <h3>Recent Tickets</h3>
+                        <div class="ticket-list">
+                            <div class="ticket-item resolved">
+                                <div class="ticket-header">
+                                    <span class="ticket-id">#12345</span>
+                                    <span class="ticket-status resolved">Resolved</span>
+                                </div>
+                                <div class="ticket-subject">Upload issue with video files</div>
+                                <div class="ticket-date">2026-03-15</div>
+                            </div>
+                            <div class="ticket-item active">
+                                <div class="ticket-header">
+                                    <span class="ticket-id">#12346</span>
+                                    <span class="ticket-status active">In Progress</span>
+                                </div>
+                                <div class="ticket-subject">Request for custom theme</div>
+                                <div class="ticket-date">2026-03-20</div>
+                            </div>
+                        </div>
+                        <button class="btn primary" onclick="createNewTicket()">
+                            <i class="fas fa-plus"></i> Create New Ticket
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other tabs will be loaded dynamically -->
+        </section>
+    </main>
+
+    <!-- Enhanced Product Modal with 5 Buttons -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content premium-modal">
+            <div class="modal-header">
+                <h3 id="modal-product-name">Product Details</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-toolbar">
+                    <button class="btn secondary" onclick="zoomInModal()">
+                        <i class="fas fa-search-plus"></i>
+                        Zoom In
+                    </button>
+                    <button class="btn secondary" onclick="zoomOutModal()">
+                        <i class="fas fa-search-minus"></i>
+                        Zoom Out
+                    </button>
+                    <button class="btn secondary" onclick="resetModalZoom()">
+                        <i class="fas fa-sync-alt"></i>
+                        Reset
+                    </button>
+                    <button class="btn danger" onclick="closeModal()">
+                        <i class="fas fa-times-circle"></i>
+                        Exit
+                    </button>
+                </div>
+                <div class="media-container">
+                    <img id="modal-product-image" src="" alt="Product" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px; transform: scale(1); transition: transform 0.25s ease;">
+                    <video id="modal-product-video" controls style="display: none; width: 100%; height: 400px; border-radius: 8px; transform: scale(1); transition: transform 0.25s ease;">
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+                <div class="product-details">
+                    <div class="detail-row">
+                        <span class="label">Price:</span>
+                        <span class="value" id="modal-product-price">Ksh 0</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Category:</span>
+                        <span class="value" id="modal-product-category">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Stock:</span>
+                        <span class="value" id="modal-product-stock">0</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Description:</span>
+                        <p id="modal-product-description">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <!-- 5 Action Buttons -->
+                <button class="btn primary" onclick="viewProduct()">
+                    <i class="fas fa-eye"></i>
+                    View
+                </button>
+                <button class="btn success" onclick="editProduct()">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                </button>
+                <button class="btn info" onclick="shareProduct()">
+                    <i class="fas fa-share"></i>
+                    Share
+                </button>
+                <button class="btn warning" onclick="downloadProduct()">
+                    <i class="fas fa-download"></i>
+                    Download
+                </button>
+                <button class="btn secondary" onclick="deleteProduct()">
+                    <i class="fas fa-trash"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Share Modal -->
+    <div id="social-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share to Social Media</h3>
+                <button class="close-btn" onclick="closeSocialModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="platform-options">
+                    <button class="platform-btn facebook-btn" onclick="confirmSocialShare('facebook')">
+                        <i class="fab fa-facebook"></i>
+                        Facebook
+                    </button>
+                    <button class="platform-btn instagram-btn" onclick="confirmSocialShare('instagram')">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </button>
+                    <button class="platform-btn tiktok-btn" onclick="confirmSocialShare('tiktok')">
+                        <i class="fab fa-tiktok"></i>
+                        TikTok
+                    </button>
+                    <button class="platform-btn whatsapp-btn" onclick="confirmSocialShare('whatsapp')">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Payment Warning Widget -->
+    <div id="payment-warning" class="payment-widget" style="display: none;">
+        <div class="widget-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h4>Payment Due</h4>
+            <p>Your monthly premium fee of Ksh 200 is due</p>
+            <p>Pay now to continue using premium features</p>
+            <button class="btn primary" onclick="makePayment()">
+                <i class="fas fa-credit-card"></i>
+                Pay Ksh 200
+            </button>
+        </div>
+    </div>
+
+    <!-- Fullscreen Media Viewer Modal -->
+    <div id="fullscreen-media-viewer" class="media-viewer-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="fullscreen-media-title">View Content</h3>
+                <button class="close-btn" onclick="closeFullscreenViewer()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="viewer-container">
+                    <img id="fullscreen-media-image" class="viewer-media" src="" alt="Product" style="display: none;">
+                    <video id="fullscreen-media-video" class="viewer-media" controls style="display: none;">
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="modal-toolbar">
+                <button class="btn secondary" onclick="zoomInFullscreen()">
+                    <i class="fas fa-search-plus"></i>
+                    Zoom In
+                </button>
+                <button class="btn secondary" onclick="zoomOutFullscreen()">
+                    <i class="fas fa-search-minus"></i>
+                    Zoom Out
+                </button>
+                <button class="btn secondary" onclick="resetFullscreenZoom()">
+                    <i class="fas fa-sync-alt"></i>
+                    Reset Zoom
+                </button>
+                <button class="btn danger" onclick="closeFullscreenViewer()">
+                    <i class="fas fa-times-circle"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Initialization -->
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIYPCpbiSMhO07kBlmuJg_g_sM6ol5G14",
+            authDomain: "shopping-online-6ba36.firebaseapp.com", 
+            projectId: "shopping-online-6ba36",
+            storageBucket: "shopping-online-6ba36.appspot.com",
+            messagingSenderId: "404079444441",
+            appId: "1:404079444441:web:bca6b897877295f92519c8"
+        };
+        
+        // Initialize Firebase (needed since this page can be accessed directly)
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Ensure an auth session is active for permissions
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User authenticated:", user.uid);
+                // If you have an initialization function in premium-dashboard.js, 
+                // call it here. For now, we refresh the UI logic.
+                if (typeof initializeDashboard === 'function') {
+                    initializeDashboard();
+                }
+            } else {
+                auth.signInAnonymously().catch(err => console.error("Anonymous Auth Failed:", err));
+            }
+        });
+
+        console.log("Premium Dashboard Firebase initialized successfully!");
+    </script>
+
+    <!-- Subscription Payment Modal -->
+    <div id="subscription-payment-modal" class="modal">
+        <div class="modal-content payment-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-crown"></i> Pay Monthly Subscription</h3>
+                <button class="close-btn" onclick="closeSubscriptionPayment()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="payment-summary">
+                    <div class="plan-info">
+                        <h4>Premium Plan</h4>
+                        <div class="price">Ksh 200<span>/month</span></div>
+                    </div>
+                    <div class="due-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Payment due on 28th of every month</span>
+                    </div>
+                </div>
+
+                <form id="subscription-payment-form" class="payment-form" onsubmit="console.log('Form submit via onsubmit!'); handlePaymentFormSubmit(event); return false;">
+                    <div class="form-section">
+                        <h4><i class="fas fa-user"></i> Personal Information</h4>
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="07XX XXX XXX" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4><i class="fas fa-mobile-alt"></i> M-Pesa Payment</h4>
+                        <div class="form-group">
+                            <label for="mpesa-number">M-Pesa Number</label>
+                            <input type="tel" id="mpesa-number" name="mpesaNumber" placeholder="07XX XXX XXX" required>
+                        </div>
+                        <div class="payment-note">
+                            <i class="fas fa-info-circle"></i>
+                            <span>You will receive an M-Pesa prompt to confirm Ksh 200 payment</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary" onclick="closeSubscriptionPayment()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn primary payment-submit-btn" onclick="console.log('Submit button clicked!'); return true;">
+                            <i class="fas fa-mobile-alt"></i>
+                            Pay Ksh 200
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Dashboard JavaScript -->
+    <script src="JS/premium-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isShopOwner(shopId) {
+      return request.auth.uid == shopId;
+    }
+    
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+
+    // MARKETPLACE IMAGES - Multi-vendor image security
+    match /marketplace/{allPaths=**} {
+      // Public read access for all marketplace images
+      allow read: if true;
+    }
+    
+    // PRODUCT IMAGES - Shop-specific product images and videos
+    match /products/{shopId}/{allPaths=**} {
+      // Public read for product browsing
+      allow read: if true;
+      
+      // Regular shops: 5MB limit for images only
+      allow write: if isSignedIn() && 
+                      isShopOwner(shopId) &&
+                      !isPremium() &&
+                      request.resource.size < 5 * 1024 * 1024 &&
+                      request.resource.contentType.matches('image/.*');
+      
+      // Premium shops: 50MB limit for images and videos
+      allow write: if isSignedIn() && 
+                      isShopOwner(shopId) &&
+                      isPremium() &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('image/.*') || 
+                       request.resource.contentType.matches('video/.*'));
+    }
+    
+    // SHOP BANNERS - Shop branding images and videos
+    match /shops/{shopId}/{allPaths=**} {
+      // Public read for shop browsing
+      allow read: if true;
+      
+      // Regular shops: 5MB limit for images only
+      allow write: if isSignedIn() && 
+                      isShopOwner(shopId) &&
+                      !isPremium() &&
+                      request.resource.size < 5 * 1024 * 1024 &&
+                      request.resource.contentType.matches('image/.*');
+      
+      // Premium shops: 50MB limit for images and videos
+      allow write: if isSignedIn() && 
+                      isShopOwner(shopId) &&
+                      isPremium() &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('image/.*') || 
+                       request.resource.contentType.matches('video/.*'));
+    }
+    
+    // USER PROFILES - Profile pictures and videos
+    match /users/{userId}/{allPaths=**} {
+      // Public read for profile pictures
+      allow read: if true;
+      
+      // Regular users: 5MB limit for images only
+      allow write: if isSignedIn() && 
+                      isOwner(userId) &&
+                      !isPremium() &&
+                      request.resource.size < 5 * 1024 * 1024 &&
+                      request.resource.contentType.matches('image/.*');
+      
+      // Premium users: 50MB limit for images and videos
+      allow write: if isSignedIn() && 
+                      isOwner(userId) &&
+                      isPremium() &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('image/.*') || 
+                       request.resource.contentType.matches('video/.*'));
+    }
+    
+    // ORDER DOCUMENTS - Receipts and invoices
+    match /orders/{orderId}/{allPaths=**} {
+      // Participants can read their order documents
+      allow read: if isSignedIn() && 
+                      // Check if user is buyer or seller
+                      (orderId.split('_')[0] == request.auth.uid || 
+                       orderId.split('_')[1] == request.auth.uid);
+      
+      // Buyers and sellers can upload order documents with validation
+      allow write: if isSignedIn() && 
+                      (orderId.split('_')[0] == request.auth.uid || 
+                       orderId.split('_')[1] == request.auth.uid) &&
+                      // Validate file size (10MB limit for documents)
+                      request.resource.size < 10 * 1024 * 1024 &&
+                      // Allow common document types
+                      (request.resource.contentType.matches('image/.*') ||
+                       request.resource.contentType.matches('application/pdf') ||
+                       request.resource.contentType.matches('text/.*') ||
+                       request.resource.contentType.matches('application/msword') ||
+                       request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.*'));
+    }
+    
+    // TEMP UPLOADS - Temporary upload handling
+    match /temp/{userId}/{allPaths=**} {
+      // Users can read their temp uploads
+      allow read: if isSignedIn() && isOwner(userId);
+      
+      // Regular users: 5MB limit for images only
+      allow write: if isSignedIn() && 
+                      isOwner(userId) &&
+                      !isPremium() &&
+                      request.resource.size < 5 * 1024 * 1024 &&
+                      request.resource.contentType.matches('image/.*');
+      
+      // Premium users: 50MB limit for images and videos
+      allow write: if isSignedIn() && 
+                      isOwner(userId) &&
+                      isPremium() &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('image/.*') || 
+                       request.resource.contentType.matches('video/.*'));
+    }
+    
+    // PREMIUM CONTENT - Subscription-based content
+    match /premium/{userId}/{allPaths=**} {
+      // Public read for premium content
+      allow read: if true;
+      
+      // Premium users can upload premium content with validation
+      allow write: if isSignedIn() && 
+                      isOwner(userId) && 
+                      request.auth.token.premium == true &&
+                      request.resource.size < 50 * 1024 * 1024 &&
+                      (request.resource.contentType.matches('image/.*') || 
+                       request.resource.contentType.matches('video/.*'));
+    }
+    
+    // ADMIN FILES - Admin-only uploads
+    match /admin/{allPaths=**} {
+      // Admin-only access
+      allow read, write: if isAdmin();
+    }
+    
+    // SYSTEM FILES - System-generated files
+    match /system/{allPaths=**} {
+      // Public read for system files
+      allow read: if true;
+      
+      // Only system can write system files
+      allow write: if false; // Written by Cloud Functions only
+    }
+    
+    // DEFAULT DENY - Secure by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
