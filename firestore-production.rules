@@ -63,8 +63,11 @@ service cloud.firestore {
       // Admin can manage any user
       allow delete: if isAdmin();
       
-      // Creation handled by Firebase Auth
-      allow create: if false;
+      // Users can create accounts (phone-based ID for unauthenticated users)
+      allow create: if true;
+      
+      // Users can only update their own profile after authentication
+      allow update: if isSignedIn() && isOwner(userId);
     }
     
     // SHOP PROFILES - Enhanced marketplace shop security
@@ -120,6 +123,18 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
+    // ADMIN INBOX - Approval requests and notifications
+    match /admin_inbox/{docId} {
+      // Only admins can read approval requests
+      allow read: if isAdmin();
+      
+      // Anyone can create approval requests (for new account submissions)
+      allow create: if true;
+      
+      // Only admins can update/delete approval requests
+      allow update, delete: if isAdmin();
+    }
+    
     // REVIEWS - Public reviews with ownership control
     match /reviews/{reviewId} {
       // Public read for marketplace transparency
@@ -144,10 +159,11 @@ service cloud.firestore {
     
     // MESSAGES - Secure messaging between marketplace participants
     match /messages/{messageId} {
-      // Participants can read their messages
-      allow read: if isSignedIn() && 
-                      (resource.data.senderId == request.auth.uid || 
-                       resource.data.receiverId == request.auth.uid);
+      // Admins can read all messages for approval management
+      allow read: if isAdmin() ||
+                   (isSignedIn() && 
+                    (resource.data.senderId == request.auth.uid || 
+                     resource.data.receiverId == request.auth.uid));
       
       // Users can send messages
       allow create: if isSignedIn() && 
@@ -157,9 +173,10 @@ service cloud.firestore {
       // No message editing (audit trail)
       allow update: if false;
       
-      // Sender can delete their own messages
-      allow delete: if isSignedIn() && 
-                      resource.data.senderId == request.auth.uid;
+      // Admins can delete any message, senders can delete their own
+      allow delete: if isAdmin() || 
+                     (isSignedIn() && 
+                      resource.data.senderId == request.auth.uid);
     }
     
     // NOTIFICATIONS - User-specific notifications

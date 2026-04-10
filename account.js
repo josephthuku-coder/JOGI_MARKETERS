@@ -505,9 +505,11 @@ class AccountManager {
     
     async saveAccountToFirebase(accountData) {
         try {
-            const docRef = await db.collection('users').add(accountData);
-            console.log('Account saved with ID:', docRef.id);
-            return docRef.id;
+            // Use user's phone number as document ID to match security rules
+            const userId = accountData.phone.replace(/\D/g, ''); // Remove non-digits
+            const docRef = await db.collection('users').doc(userId).set(accountData);
+            console.log('Account saved with ID:', userId);
+            return userId;
         } catch (error) {
             console.error('Error saving account:', error);
             throw error;
