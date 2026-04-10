@@ -1386,67 +1386,83 @@ class AccountManager {
         } catch (error) {
             console.error('Error sending payment notification:', error);
         }
-    }
-    
-    // Simulate M-Pesa payment (for development/testing)
-    async simulateMpesaPayment(phone, amount) {
-        try {
-            console.log('💳 Simulating M-Pesa payment...');
-            console.log('💳 Phone:', phone);
-            console.log('💳 Amount:', amount);
-            
-            // For development: Skip actual API call and simulate success
-            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-                console.log('🧪 Development mode: Simulating successful payment');
-                console.log('📱 NOTE: No real M-Pesa prompt in development mode');
-                
-                // Simulate payment processing delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                return {
-                    success: true,
-                    transactionId: 'DEV_' + Date.now(),
-                    message: 'Payment simulated successfully (Development Mode)'
-                };
-            }
-            
-            // Production: Use actual M-Pesa API endpoint
-            console.log('🔍 Attempting real M-Pesa API call...');
-            const response = await fetch('https://your-production-mpesa-api.com/api/mpesa/stkpush', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    phoneNumber: phone,
-                    amount: amount,
-                    accountReference: 'SHOPPING_PREMIUM'
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`M-Pesa API error: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            console.log('💳 M-Pesa payment response:', result);
-            return result;
-            
-        } catch (error) {
-            console.error('M-Pesa API Error:', error);
-            
-            // Fallback for development
-            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-                console.log('🧪 Fallback: Simulating successful payment');
-                return {
-                    success: true,
-                    transactionId: 'FALLBACK_' + Date.now(),
-                    message: 'Payment simulated (Fallback Mode)'
-                };
-            }
-            
-            throw error;
+        
+        // Production: Use Safaricom sandbox API
+        console.log('Attempting Safaricom sandbox API call...');
+        
+        // Generate OAuth token (you'll need to implement this)
+        const accessToken = await this.getMpesaAccessToken();
+        
+        // Generate password for API call
+        const timestamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, -3);
+        const password = btoa('174379' + 'bfb279c93339c6fb5d1a5f2470b1c263' + timestamp);
+        
+        const response = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                BusinessShortCode: '174379',
+                Password: password,
+                Timestamp: timestamp,
+                TransactionType: 'CustomerPayBillOnline',
+                Amount: amount,
+                PartyA: phone.replace(/\D/g, ''),
+                PartyB: '174379',
+                PhoneNumber: phone.replace(/\D/g, ''),
+                CallBackURL: 'https://your-domain.com/callback',
+                AccountReference: 'SHOPPING_PREMIUM',
+                TransactionDesc: 'Premium Account Payment'
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`M-Pesa API error: ${response.status}`);
         }
+        
+        const result = await response.json();
+        console.log('M-Pesa payment response:', result);
+        return result;
+        
+    } catch (error) {
+        console.error('M-Pesa API Error:', error);
+        
+        // Fallback for development
+        if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+            console.log('Fallback: Simulating successful payment');
+            return {
+                success: true,
+                transactionId: 'FALLBACK_' + Date.now(),
+                message: 'Payment simulated (Fallback Mode)'
+            };
+        }
+        
+        throw error;
+    }
+}
+
+// Get M-Pesa OAuth access token
+async getMpesaAccessToken() {
+    try {
+        const response = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Basic ' + btoa('CMyZ5M09aM7wXGbgApJx91Cg6wereucKA32wydj96fzV4qFs:gkszHAGta5kclANeuQHgsN2AZAIxWezm4shWF5GYnHOqGqfl78GhyDpm04pGGIGG')
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`OAuth error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.access_token;
+        
+    } catch (error) {
+        console.error('OAuth Error:', error);
+        throw error;
     }
 }
 

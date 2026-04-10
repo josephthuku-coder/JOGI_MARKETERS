@@ -1013,6 +1013,9 @@ class AdminPanel {
                     approvedAt: new Date()
                 });
                 
+                // Send approval email notification
+                await this.sendApprovalEmail(userData);
+                
                 // Also update admin_inbox if there are any messages for this user
                 const inboxSnapshot = await db.collection('admin_inbox').where('userId', '==', userId).get();
                 if (!inboxSnapshot.empty) {
@@ -2010,6 +2013,39 @@ class AdminPanel {
             }
             
             row.style.display = shouldShow ? '' : 'none';
+        }
+    }
+    
+    // Send approval email notification
+    async sendApprovalEmail(userData) {
+        try {
+            console.log('Sending approval email to:', userData.email);
+            
+            // Initialize EmailJS if not already done
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init("A0OtQsH6zdIb33M8-");
+                
+                const templateParams = {
+                    to_email: userData.email,
+                    to_name: userData.username,
+                    subject: 'Congratulations! Your Account Has Been Approved!',
+                    message: `Your ${userData.accountType || 'free'} account has been approved by our admin team. You can now start using your account immediately.`,
+                    account_type: userData.accountType || 'free',
+                    support_email: 'josephgthuku@gmail.com',
+                    support_phone: '+254 707584594',
+                    approved_date: new Date().toLocaleDateString()
+                };
+                
+                const response = await emailjs.send('service_r4f4udw', 'template_3w9d45m', templateParams);
+                console.log('Approval email sent successfully:', response);
+                return true;
+            } else {
+                console.error('EmailJS not loaded');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error sending approval email:', error);
+            return false;
         }
     }
 }
