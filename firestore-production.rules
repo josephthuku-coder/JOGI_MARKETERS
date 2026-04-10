@@ -58,8 +58,8 @@ service cloud.firestore {
       // Public read for marketplace browsing
       allow read: if true;
       
-      // Users can only update their own profile
-      allow update: if isOwner(userId);
+      // Users can update their own profile or admin can update
+      allow update: if isOwner(userId) || isAdmin();
       
       // Admin can manage any user
       allow delete: if isAdmin();
