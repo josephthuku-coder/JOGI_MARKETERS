@@ -1,0 +1,14 @@
+Files to Upload to GitHub:
+
+1. netlify.toml (NEW - Netlify configuration)
+2. firestore-production.rules (MODIFIED - Fixed permissions)
+3. upgrade-to-premium.html (MODIFIED - API key removed)
+4. dashboard.html (MODIFIED - API key removed)
+5. index.html (MODIFIED - API key removed)
+6. premium-dashboard.html (MODIFIED - API key removed)
+7. share.html (MODIFIED - API key removed)
+8. shop.html (MODIFIED - API key removed)
+9. JS/admin-panel.js (MODIFIED - API key removed)
+10. JS/firebase-init.js (MODIFIED - API key removed)
+
+Total: 10 files to upload

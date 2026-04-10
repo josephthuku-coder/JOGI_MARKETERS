@@ -1441,28 +1441,28 @@ class AccountManager {
         
         throw error;
     }
-}
-
-// Get M-Pesa OAuth access token
-async getMpesaAccessToken() {
-    try {
-        const response = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Basic ' + btoa('CMyZ5M09aM7wXGbgApJx91Cg6wereucKA32wydj96fzV4qFs:gkszHAGta5kclANeuQHgsN2AZAIxWezm4shWF5GYnHOqGqfl78GhyDpm04pGGIGG')
+    
+    // Get M-Pesa OAuth access token
+    async getMpesaAccessToken() {
+        try {
+            const response = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Basic ' + btoa('CMyZ5M09aM7wXGbgApJx91Cg6wereucKA32wydj96fzV4qFs:gkszHAGta5kclANeuQHgsN2AZAIxWezm4shWF5GYnHOqGqfl78GhyDpm04pGGIGG')
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`OAuth error: ${response.status}`);
             }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`OAuth error: ${response.status}`);
+            
+            const data = await response.json();
+            return data.access_token;
+            
+        } catch (error) {
+            console.error('OAuth Error:', error);
+            throw error;
         }
-        
-        const data = await response.json();
-        return data.access_token;
-        
-    } catch (error) {
-        console.error('OAuth Error:', error);
-        throw error;
     }
 }
 
